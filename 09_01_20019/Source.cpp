@@ -1,10 +1,12 @@
 #include <iostream>
+#include <ctime>
+
 void imprimir(int arreglo[], int tam) {
 	for (int i = 0; i < tam; i++)
 	{
 		std::cout << arreglo[i]<<" ";
 	}
-
+	std::cout << std::endl;
 }
 
 void bubbleSort(int arreglo[], int tam,int tam2) {
@@ -22,6 +24,7 @@ void bubbleSort(int arreglo[], int tam,int tam2) {
 				arreglo[j - 1] = temp;
 				orden = false;
 			}
+			imprimir(arreglo, tam); //Imprime la lista.
 		}
 		if (orden) break;
 		tam2--;
@@ -36,13 +39,13 @@ void insertionSort(int arreglo[],int tam, int pos=0,int temp=0) {//creamos una v
 		temp = arreglo[i];
 		while ((pos > 0 ) && (arreglo[pos-1] > temp))// mietras el numero anterior sea mayor se ira moviendo el dato hacia la "izquierda".
 		{
+		imprimir(arreglo, tam); //Imprime la lista.
 			c++;
 			arreglo[pos] = arreglo[pos - 1];
 			pos--;
 			
 		}
 		arreglo[pos] = temp;// inserta el menor a la izquierda.
-		
 	}
 	std::cout << c << " iteraciones reales\n";
 }
@@ -56,6 +59,7 @@ void seleccionSort(int arreglo[], int tam, int temp = 0, int min = 0) { // hacem
 		for (int j = i+1; j < tam; j++)
 		{
 			c++;
+			imprimir(arreglo, tam); //Imprime la lista.
 			if (arreglo[j]<arreglo[min]) // encuentra el dato minimo del arreglo
 			{
 				min = j;
@@ -72,6 +76,7 @@ void seleccionSort(int arreglo[], int tam, int temp = 0, int min = 0) { // hacem
 	}
 	std::cout << c << " iteraciones reales\n";
 }
+int vueltas = 0;
 void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a donde va a comparar
 	int i = izq, j = der, temp;
 	int p = arreglo[der]; //    // este numero sera el de referencia para comparar de izquierda a derecha.
@@ -85,6 +90,8 @@ void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a do
 			i++;
 			j--;
 		}
+		vueltas++;
+		imprimir(arreglo, 5); //Imprime la lista.
 	}
 	if (izq < j) { // ya con los numeros menores a la referencia acomoda los numeros menores de la misma forma
 		quickSort(arreglo, j, izq);
@@ -93,32 +100,65 @@ void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a do
 		quickSort(arreglo, der, i);
 	}
 }
-
+void rehacer(int arreglo[]) {
+	arreglo[0] = 5;
+	arreglo[1] = 4;
+	arreglo[2] = 3;
+	arreglo[3] = 2;
+	arreglo[4] = 1;
+}
 int main() {
-	int arreglo[] = { 1,2,3,4,5 };
+	int arreglo[] = { 5,4,3,2,1 };
 	int tam = sizeof(arreglo) / sizeof(arreglo[0]);
+	unsigned t0, t1;
 	int opc = 0;
-	std::cout << "1 BubbleSort, 2 inserionSort,3 seleccionSort, 4 quickSort" << std::endl;
-	std::cin >> opc;
-	switch (opc)
+	double time;
+	while (opc != 5)
 	{
-
-	case 1:
-		bubbleSort(arreglo, tam, tam); // Acomoda arreglos de menor a mayor.
-		break;
-	case 2:
-		insertionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
-		break;
-	case 3:
-		seleccionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
-		break;
-	case 4:
-		quickSort(arreglo, tam-1, 0);// Acomoda arreglos de menor a mayor.
-		break;
-	default:
-		break;
+		vueltas = 0;
+			std::cout << "1 BubbleSort, 2 inserionSort,3 seleccionSort, 4 quickSort, 5 Salir" << std::endl;
+			std::cin >> opc;
+			rehacer(arreglo);
+		switch (opc)
+		{
+		case 1:
+			t0 = clock();
+			bubbleSort(arreglo, tam, tam); // Acomoda arreglos de menor a mayor.
+			t1 = clock();
+			imprimir(arreglo, tam); //Imprime la lista.
+			time = (double(t1 - t0) / CLOCKS_PER_SEC);
+			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			break;
+		case 2:
+			t0 = clock();
+			insertionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
+			t1 = clock();
+			imprimir(arreglo, tam); //Imprime la lista.
+			time = (double(t1 - t0) / CLOCKS_PER_SEC);
+			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			break;
+		case 3:
+			t0 = clock();
+			seleccionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
+			t1 = clock();
+			imprimir(arreglo, tam); //Imprime la lista.
+			time = (double(t1 - t0) / CLOCKS_PER_SEC);
+			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			break;
+		case 4:
+			t0 = clock();
+			quickSort(arreglo, tam - 1, 0);// Acomoda arreglos de menor a mayor.
+			std::cout << std::endl << "Iteraciones :" << vueltas << std::endl;
+			t1 = clock();
+			imprimir(arreglo, tam); //Imprime la lista.
+			time = (double(t1 - t0) / CLOCKS_PER_SEC);
+			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			break;
+		default:
+			break;
+		}
 	}
-	imprimir(arreglo, tam); //Imprime la lista.
+	
 	std::cin.ignore();
 	std::cin.get();
 	return 0;
