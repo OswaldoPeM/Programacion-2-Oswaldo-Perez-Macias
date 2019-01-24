@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include<time.h>
 
 void imprimir(int arreglo[], int tam) {
 	for (int i = 0; i < tam; i++)
@@ -10,7 +11,8 @@ void imprimir(int arreglo[], int tam) {
 }
 
 void bubbleSort(int arreglo[], int tam,int tam2) {
-	int temp, c = 0; // creo variable temporal donde almacenare el valor que quiero mover
+	int temp = 0; // creo variable temporal donde almacenare el valor que quiero mover
+	unsigned long int c = 0;
 	bool orden = true;
 	for (int i = 0; i < tam-1; i++)
 	{
@@ -24,7 +26,7 @@ void bubbleSort(int arreglo[], int tam,int tam2) {
 				arreglo[j - 1] = temp;
 				orden = false;
 			}
-			imprimir(arreglo, tam); //Imprime la lista.
+			//imprimir(arreglo, tam); //Imprime la lista.
 		}
 		if (orden) break;
 		tam2--;
@@ -32,14 +34,14 @@ void bubbleSort(int arreglo[], int tam,int tam2) {
 	std::cout << c << " iteraciones reales\n";
 }
 void insertionSort(int arreglo[],int tam, int pos=0,int temp=0) {//creamos una variable para almacenar el dato que vamos a insertar, y una que useamos para saber posision 
-	int c = 0;
+	unsigned long int c = 0;
 	for (int i = 0; i < tam; i++)
 	{
 		pos = i;
 		temp = arreglo[i];
 		while ((pos > 0 ) && (arreglo[pos-1] > temp))// mietras el numero anterior sea mayor se ira moviendo el dato hacia la "izquierda".
 		{
-		imprimir(arreglo, tam); //Imprime la lista.
+		//imprimir(arreglo, tam); //Imprime la lista.
 			c++;
 			arreglo[pos] = arreglo[pos - 1];
 			pos--;
@@ -50,7 +52,7 @@ void insertionSort(int arreglo[],int tam, int pos=0,int temp=0) {//creamos una v
 	std::cout << c << " iteraciones reales\n";
 }
 void seleccionSort(int arreglo[], int tam, int temp = 0, int min = 0) { // hacemos  una variable que contenga el dato minimo, y una que guarde la posision del dato minimo
-	int c = 0;
+	unsigned long int c = 0;
 	bool orden ;
 	for (int i = 0; i < tam; i++)
 	{
@@ -59,7 +61,7 @@ void seleccionSort(int arreglo[], int tam, int temp = 0, int min = 0) { // hacem
 		for (int j = i+1; j < tam; j++)
 		{
 			c++;
-			imprimir(arreglo, tam); //Imprime la lista.
+			//imprimir(arreglo, tam); //Imprime la lista.
 			if (arreglo[j]<arreglo[min]) // encuentra el dato minimo del arreglo
 			{
 				min = j;
@@ -76,8 +78,8 @@ void seleccionSort(int arreglo[], int tam, int temp = 0, int min = 0) { // hacem
 	}
 	std::cout << c << " iteraciones reales\n";
 }
-int vueltas = 0;
-void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a donde va a comparar
+unsigned long int vueltas = 0;
+void quickSort(int arreglo[], int &der, int &izq) { // pide un rango de donde a donde va a comparar
 	int i = izq, j = der, temp;
 	int p = arreglo[der]; //    // este numero sera el de referencia para comparar de izquierda a derecha.
 	while (i <= j) {
@@ -91,7 +93,7 @@ void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a do
 			j--;
 		}
 		vueltas++;
-		imprimir(arreglo, 5); //Imprime la lista.
+		//imprimir(arreglo, 5); //Imprime la lista.
 	}
 	if (izq < j) { // ya con los numeros menores a la referencia acomoda los numeros menores de la misma forma
 		quickSort(arreglo, j, izq);
@@ -100,59 +102,75 @@ void quickSort(int arreglo[], int der, int izq) { // pide un rango de donde a do
 		quickSort(arreglo, der, i);
 	}
 }
-void rehacer(int arreglo[]) {
-	arreglo[0] = 5;
-	arreglo[1] = 4;
-	arreglo[2] = 3;
-	arreglo[3] = 2;
-	arreglo[4] = 1;
+void hacer(int arreglo1[],int tam) {
+	srand(time(NULL));
+	int random = 0;
+	for (int i = 0; i < tam; i++)
+	{
+		random = 1 + rand() % (10001 - 1);
+		arreglo1[i] = random;
+	}
+}
+void rehacer(int arreglo[],int copia[],int tam) {
+	for (int i = 0; i < tam; i++)
+	{
+		copia[i] = arreglo[i];
+	}
 }
 int main() {
-	int arreglo[] = { 5,4,3,2,1 };
-	int tam = sizeof(arreglo) / sizeof(arreglo[0]);
+	int tam,cero=0,tammenos;
+	std::cout << "Introducir el tamanio del arreglo" << std::endl;
+	std::cin >> tam;
+	tammenos = tam - 1;
+
+	int* arreglo1 = new int[tam];
+
+	hacer(arreglo1,tam);
+
+	int* copyarray=new int[tam];
 	unsigned t0, t1;
 	int opc = 0;
 	double time;
 	while (opc != 5)
 	{
+		rehacer(arreglo1, copyarray, tam);
 		vueltas = 0;
 			std::cout << "1 BubbleSort, 2 inserionSort,3 seleccionSort, 4 quickSort, 5 Salir" << std::endl;
 			std::cin >> opc;
-			rehacer(arreglo);
 		switch (opc)
 		{
 		case 1:
 			t0 = clock();
-			bubbleSort(arreglo, tam, tam); // Acomoda arreglos de menor a mayor.
+			bubbleSort(copyarray, tam, tam); // Acomoda arreglos de menor a mayor.
 			t1 = clock();
-			imprimir(arreglo, tam); //Imprime la lista.
 			time = (double(t1 - t0) / CLOCKS_PER_SEC);
 			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			//imprimir(arreglo, tam); //Imprime la lista.
 			break;
 		case 2:
 			t0 = clock();
-			insertionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
+			insertionSort(copyarray, tam);// Acomoda arreglos de menor a mayor.
 			t1 = clock();
-			imprimir(arreglo, tam); //Imprime la lista.
 			time = (double(t1 - t0) / CLOCKS_PER_SEC);
 			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			//imprimir(arreglo, tam); //Imprime la lista.
 			break;
 		case 3:
 			t0 = clock();
-			seleccionSort(arreglo, tam);// Acomoda arreglos de menor a mayor.
+			seleccionSort(copyarray, tam);// Acomoda arreglos de menor a mayor.
 			t1 = clock();
-			imprimir(arreglo, tam); //Imprime la lista.
 			time = (double(t1 - t0) / CLOCKS_PER_SEC);
 			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			//imprimir(arreglo, tam); //Imprime la lista.
 			break;
 		case 4:
 			t0 = clock();
-			quickSort(arreglo, tam - 1, 0);// Acomoda arreglos de menor a mayor.
+			quickSort(copyarray, tammenos, cero);// Acomoda arreglos de menor a mayor.
 			std::cout << std::endl << "Iteraciones :" << vueltas << std::endl;
 			t1 = clock();
-			imprimir(arreglo, tam); //Imprime la lista.
 			time = (double(t1 - t0) / CLOCKS_PER_SEC);
 			std::cout << "\nTiempo de ejecucion: " << time << std::endl;
+			//imprimir(arreglo, tam); //Imprime la lista.
 			break;
 		default:
 			break;
@@ -161,5 +179,7 @@ int main() {
 	
 	std::cin.ignore();
 	std::cin.get();
+	delete[] arreglo1;
+	delete[] copyarray;
 	return 0;
 }
