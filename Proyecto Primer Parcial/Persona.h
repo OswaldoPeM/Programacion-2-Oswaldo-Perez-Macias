@@ -5,12 +5,12 @@ using namespace std;
 class Persona
 {
 public:
-	void giveName(string nombre);
-	void giveLName(string apellido);
-	void giveEMail(string eMail);
-	void giveBD(int fecha[]);
-	int* GetBD();
+	void setName(string nombre);
+	void setLName(string apellido);
+	void setEMail(string eMail);
+	void setBD(int fecha[3]);
 
+	int* GetBD();
 	string GetFName();
 	string GetLName();
 	string GetEMail();

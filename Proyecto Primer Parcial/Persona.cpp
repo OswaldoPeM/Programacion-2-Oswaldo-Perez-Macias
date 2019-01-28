@@ -7,7 +7,7 @@ string Persona::GetFName()
 	return _nombre;
 }
 
-void Persona::giveName(string nombre)
+void Persona::setName(string nombre)
 {
 	_nombre = nombre;
 }
@@ -17,7 +17,7 @@ string Persona::GetLName()
 	return _apellido;
 }
 
-void Persona::giveLName(string apellido)
+void Persona::setLName(string apellido)
 {
 	_apellido = apellido;
 }
@@ -27,12 +27,12 @@ string Persona::GetEMail()
 	return _eMail;
 }
 
-void Persona::giveEMail(string eMail)
+void Persona::setEMail(string eMail)
 {
 	_eMail = eMail;
 }
 
-void Persona::giveBD(int fecha[])
+void Persona::setBD(int fecha[3])
 {
 	_fecha[0] = fecha[0];
 	_fecha[1] = fecha[1];

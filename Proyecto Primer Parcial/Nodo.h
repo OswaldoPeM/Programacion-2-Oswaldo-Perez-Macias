@@ -3,13 +3,14 @@
 class Nodo
 {
 private:
-	Persona _Persona;
 	Nodo* _Siguiente = NULL;
 	Nodo* _Anterior = NULL;
+	Persona *_Person;
 public:
-	Persona GetPersona();
-	void GiveSiguiente(Nodo *ptrS);
-	void GiveAnteriro(Nodo *ptrA);
+	void setNext(Nodo *ptrS);
+	void setPrev(Nodo *ptrA);
+	void setPerson(Persona persona);
+	Persona* GetPersona();
 	Nodo* GetSiguiente();
 	Nodo* GetAnterior();
 	Nodo();
