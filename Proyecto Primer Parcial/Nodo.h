@@ -3,16 +3,16 @@
 class Nodo
 {
 private:
-	Nodo* _Siguiente = NULL;
-	Nodo* _Anterior = NULL;
-	Persona *_Person;
+	Nodo* _Next = NULL;//apunta al siguiente nodo
+	Nodo* _Prev = NULL;// apunta al nodo anterior
+	Persona _Persona;// La persona
 public:
 	void setNext(Nodo *ptrS);
 	void setPrev(Nodo *ptrA);
-	void setPerson(Persona persona);
-	Persona* GetPersona();
-	Nodo* GetSiguiente();
-	Nodo* GetAnterior();
+	void setPersona(Persona persona);
+	Persona GetPersona();//Almacena a la persona
+	Nodo* GetNext();//regresa el puntero siguiente
+	Nodo* GetPrev();//regresa el puntero anterior
 	Nodo();
 	~Nodo();
 };

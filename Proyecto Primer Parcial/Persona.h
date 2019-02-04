@@ -1,6 +1,8 @@
 #pragma once
 #include<iostream>
+#include<fstream>
 #include<string>
+#include<sstream>
 using namespace std;
 class Persona
 {
@@ -9,12 +11,13 @@ public:
 	void setLName(string apellido);
 	void setEMail(string eMail);
 	void setBD(int fecha[3]);
-
+	int strToInt(string str);
 	int* GetBD();
 	string GetFName();
 	string GetLName();
 	string GetEMail();
 	Persona();
+	void constPersona(string LName, string FName, string EMail, string BD);
 	~Persona();
 private:
 	int _fecha[3];

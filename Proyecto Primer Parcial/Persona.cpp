@@ -39,6 +39,13 @@ void Persona::setBD(int fecha[3])
 	_fecha[2] = fecha[2];
 }
 
+int Persona::strToInt(string str)
+{
+	int i;
+	istringstream(str) >> i;
+	return i;
+}
+
 int* Persona::GetBD()
 {
 	return _fecha;
@@ -46,6 +53,22 @@ int* Persona::GetBD()
 
 Persona::Persona()
 {
+}
+
+void Persona::constPersona(string LName, string FName, string EMail, string BD)
+{
+	string buffer;
+	int x = 0, i = 0;
+	_nombre = FName;
+	_apellido = LName;
+	_eMail = EMail;
+	stringstream stream(BD);
+	while (getline(stream, buffer, '/'))
+	{
+		_fecha[i] = strToInt(buffer);
+		i++;
+	}
+	return;
 }
 
 

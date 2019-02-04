@@ -2,34 +2,34 @@
 
 
 
-Persona * Nodo::GetPersona()
+Persona  Nodo::GetPersona()
 {
-	return _Person;
+	return _Persona;
 }
 
 void Nodo::setNext(Nodo *ptrS)
 {
-	_Siguiente = ptrS;
+	_Next = ptrS;
 }
 
 void Nodo::setPrev(Nodo * ptrA)
 {
-	_Anterior = ptrA;
+	_Prev = ptrA;
 }
 
-void Nodo::setPerson(Persona persona)
+void Nodo::setPersona(Persona persona)
 {
-	*_Person = persona;
+	_Persona = persona;
 }
 
-Nodo * Nodo::GetSiguiente()
+Nodo * Nodo::GetNext()
 {
-	return _Siguiente;
+	return _Next;
 }
 
-Nodo * Nodo::GetAnterior()
+Nodo * Nodo::GetPrev()
 {
-	return _Anterior;
+	return _Prev;
 }
 
 Nodo::Nodo()
@@ -39,8 +39,8 @@ Nodo::Nodo()
 
 Nodo::~Nodo()
 {
-	if (GetSiguiente() != NULL)
+	if (GetNext() != NULL)
 	{
-		delete GetSiguiente();
+		delete GetNext();
 	}
 }
