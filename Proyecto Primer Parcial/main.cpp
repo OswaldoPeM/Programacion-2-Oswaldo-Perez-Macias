@@ -115,14 +115,18 @@ void add(Lista* lista, char opc = '\0', bool listo = false) {
 		{
 		case'1':
 			lista->push_front(nodo);
+			listo = true;
 			break;
 		case'2':
 			lista->push_back(nodo);
+			listo = true;
 			break;
 		case'3':
 			std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
 			std::cin >> x;
 			lista->insert_at(nodo, x);
+			listo = true;
+			break;
 		default:
 			break;
 		}
@@ -192,6 +196,7 @@ void menu(Lista* lista, char opc='\0') {
 			break;
 		case'7':
 			lista->clear();
+			lista = NULL;
 			break;
 		case'8':
 			delete lista;
