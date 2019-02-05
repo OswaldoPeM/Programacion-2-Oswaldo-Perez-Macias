@@ -29,6 +29,7 @@ void Lista::print()
 			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << ',' << temp->GetPersona().GetBD(1) << ',' << temp->GetPersona().GetBD(2) << endl;
 			temp = temp->GetNext();
 		}
+		return;
 	}
 }
 

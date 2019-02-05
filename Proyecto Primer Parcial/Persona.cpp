@@ -50,13 +50,13 @@ int Persona::GetBD(int x)
 {
 	switch (x)
 	{
+	case 0:
+		return _fecha[x];
+		break;
 	case 1:
 		return _fecha[x];
 		break;
 	case 2:
-		return _fecha[x];
-		break;
-	case 3:
 		return _fecha[x];
 		break;
 	default:
