@@ -194,7 +194,6 @@ void menu(Lista* lista, char opc='\0') {
 			lista->clear();
 			break;
 		case'8':
-			lista->clear();
 			delete lista;
 			lista = NULL;
 			lista = defLista(lista);
