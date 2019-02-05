@@ -7,11 +7,11 @@ public:
 	Nodo* GetFin();
 	int size();//imprime el tamanio de la lista
 	void clear();//borra la lista
-	void print();
+	void print();// imprime la lista
 	bool isThis(Nodo* nodo);// pregunta al usuario si es esta la persona que buscas
-	virtual void FindByName(std::string nombre, std::string apellido);//regresa un nodo de la lista buscando por nombre y apellido
-	virtual void sortByName() = 0;
-	//virtual void sortByBrithDay() = 0;//Organiza la lista por Fecha de nacimiento
+	virtual bool FindByName(std::string nombre, std::string apellido);//imprime el lugar de la lista buscando por nombre y apellido
+	virtual void sortByName() = 0;//Organiza por Nombre 
+	virtual void sortByBrithDay() = 0;//Organiza la lista por Fecha de nacimiento
 	//virtual void sortByEMail() = 0;//Organiza por  EMail
 	virtual void push_back(Nodo* nodo) = 0;// manda a el ultimo lugar de la lista un nodo
 	virtual void push_front(Nodo* nodo) = 0;//manda hasta el frente a un nodo
@@ -51,8 +51,11 @@ public:
 	 void delete_last();
 	 void delete_first();
 	 void sortByName();
-	 void quickSort(Nodo* derecha,Nodo* izquierda);
-	 Nodo* _quickSort(Nodo* derecha, Nodo* izquierda);
+	 void quickSort_byName(Nodo* derecha,Nodo* izquierda);
+	 Nodo* _quickSort_byName(Nodo* derecha, Nodo* izquierda);
+	 void sortByBrithDay();
+	 void quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda);
+	 Nodo* _quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda);
 	 Nodo* pop_back();
 	 Nodo* pop_front();
 };
@@ -65,6 +68,7 @@ public:
 	void delete_last();
 	void delete_first();
 	void sortByName();
+	void sortByBrithDay();
 	Nodo* pop_back();
 	Nodo* pop_front();
 };
@@ -77,8 +81,11 @@ public:
 	void delete_last();
 	void delete_first();
 	void sortByName();
-	void quickSort(Nodo* derecha, Nodo* izquierda);
-	Nodo* _quickSort(Nodo* derecha, Nodo* izquierda);
+	void quickSort_byName(Nodo* derecha, Nodo* izquierda);
+	Nodo* _quickSort_byName(Nodo* derecha, Nodo* izquierda);
+	void sortByBrithDay();
+	void quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda);
+	Nodo* _quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda);
 	Nodo* pop_back();
 	Nodo* pop_front();
 };

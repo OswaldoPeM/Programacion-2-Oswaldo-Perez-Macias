@@ -12,7 +12,7 @@ public:
 	void setEMail(string eMail);
 	void setBD(int fecha[3]);
 	int strToInt(string str);
-	int* GetBD();
+	int GetBD(int x);
 	string GetFName();
 	string GetLName();
 	string GetEMail();

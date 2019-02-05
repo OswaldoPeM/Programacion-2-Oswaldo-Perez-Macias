@@ -46,9 +46,23 @@ int Persona::strToInt(string str)
 	return i;
 }
 
-int* Persona::GetBD()
+int Persona::GetBD(int x)
 {
-	return _fecha;
+	switch (x)
+	{
+	case 1:
+		return _fecha[x];
+		break;
+	case 2:
+		return _fecha[x];
+		break;
+	case 3:
+		return _fecha[x];
+		break;
+	default:
+		break;
+	}
+	
 }
 
 Persona::Persona()

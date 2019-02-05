@@ -23,9 +23,10 @@ void Lista::print()
 	Nodo* temp = _Raiz;
 	int x = 0;
 	if (_Raiz != NULL) {
+		std::cout << "Apellido,Nombre,EMail,Fecha" << std::endl;
 		while (temp != _Fin)
 		{
-			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD()[0] << ',' << temp->GetPersona().GetBD()[1] << ',' << temp->GetPersona().GetBD()[2] << endl;
+			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << ',' << temp->GetPersona().GetBD(1) << ',' << temp->GetPersona().GetBD(2) << endl;
 			temp = temp->GetNext();
 		}
 	}
@@ -104,7 +105,7 @@ void Simple::delete_at(int lugar)
 	delete temp1;
 }
 
-void Lista::FindByName(string nombre, string apellido)
+bool Lista::FindByName(string nombre, string apellido)
 {
 	Nodo* temp = _Raiz;
 	int x = -1;
@@ -121,14 +122,15 @@ void Lista::FindByName(string nombre, string apellido)
 			if (isThis(temp))
 			{
 				std::cout << "La persona esta persona se encuentra en el lugar: " << x << std::endl;
-				return;
+				return true;
 			}
 			temp = temp->GetNext();
 		}
 		std::cout << "La persona que busca, no coincide con la lista de personas." << std::endl;
+		return false;
 	}
 	std::cout << "La lista esta vacia" << std::endl;
-	return;
+	return false;
 }
 
 int Lista::size()
@@ -190,16 +192,11 @@ void Simple::sortByName()
 		anterior = _Raiz;
 		for (int j = 0; j < tam2; j++)//
 		{
-			if (( actual->GetPersona().GetLName() < anterior->GetPersona().GetLName() ) && ( anterior != _Fin )) {// intercambia de lugar la mayor por la menor.
-				temp=actual->GetPersona();
+			if (actual->GetPersona().GetLName() + actual->GetPersona().GetFName() < anterior->GetPersona().GetLName() + anterior->GetPersona().GetFName()) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
 				actual->setPersona(anterior->GetPersona());
 				anterior->setPersona(temp);
 				orden = false;
-			}
-			if ((actual->GetPersona().GetLName() == anterior->GetPersona().GetLName()) && (actual->GetPersona().GetFName() < anterior->GetPersona().GetFName())) {
-				temp = actual->GetPersona();
-				actual->setPersona(anterior->GetPersona()); 
-				anterior->setPersona(temp);
 			}
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
@@ -212,6 +209,39 @@ void Simple::sortByName()
 
 void Simple::sortByBrithDay()
 {
+	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
+	Persona temp;
+	int tam = size(), tam2 = size();
+	bool orden = true;
+	for (int i = 0; i < tam - 1; i++)
+	{
+		actual = _Raiz->GetNext();
+		anterior = _Raiz;
+		for (int j = 0; j < tam2; j++)
+		{
+			if (actual->GetPersona().GetBD(2) < anterior->GetPersona().GetBD(2)) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+				orden = false;
+			}
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(1) < anterior->GetPersona().GetBD(1))) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+			}
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(1) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(0) < anterior->GetPersona().GetBD(0))) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+			}
+			
+			actual = actual->GetNext();
+			anterior = anterior->GetNext();
+		}
+		if (orden) break;
+		tam2--;
+	}
 }
 
 void Simple::sortByEMail()
@@ -221,8 +251,8 @@ void Simple::sortByEMail()
 
 bool Lista::isThis(Nodo * nodo)
 {
-	std::cout << "/nNombre: " << nodo->GetPersona().GetLName() << " " << nodo->GetPersona().GetFName() <<"\nFecha de nacimiento: " << nodo->GetPersona().GetBD()[0] << '/' << nodo->GetPersona().GetBD()[1] <<'/' << nodo->GetPersona().GetBD()[2] << "\nEmail: " << nodo->GetPersona().GetEMail() << std::endl;
-	std::cout << "Si es esta la persona que quieres eliminar de la lista, Presiones 's'" << std::endl;
+	std::cout << "/nNombre: " << nodo->GetPersona().GetLName() << " " << nodo->GetPersona().GetFName() <<"\nFecha de nacimiento: " << nodo->GetPersona().GetBD(0) << '/' << nodo->GetPersona().GetBD(1) <<'/' << nodo->GetPersona().GetBD(2) << "\nEmail: " << nodo->GetPersona().GetEMail() << std::endl;
+	std::cout << "Esta seguro de que esta es la persona?\n Presiones 's' si es asi\n" << std::endl;
 	char opc = '\0';
 	std::cin >> opc;
 	if ((opc != 's') | (opc != 'S'))return false;
@@ -351,22 +381,22 @@ void Doble::delete_first()
 
 void Doble::sortByName()
 {
-	quickSort(_Raiz,_Fin);
+	quickSort_byName(_Raiz,_Fin);
 }
 
-void Doble::quickSort(Nodo* izquierda, Nodo* derecha)
+void Doble::quickSort_byName(Nodo* izquierda, Nodo* derecha)
 {
 	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
 	{
 		if ((derecha->GetPrev() != NULL) | (izquierda->GetNext() != NULL)) {
-			Nodo *p = _quickSort(izquierda, derecha);
-			if (p != NULL) quickSort(izquierda, p->GetPrev());
-			if (p != NULL) quickSort(p->GetNext(), derecha);
+			Nodo *p = _quickSort_byName(izquierda, derecha);
+			if (p != NULL) quickSort_byName(izquierda, p->GetPrev());
+			if (p != NULL) quickSort_byName(p->GetNext(), derecha);
 		}
 	}
 }
 
-Nodo * Doble::_quickSort(Nodo * izquierda, Nodo * derecha)
+Nodo * Doble::_quickSort_byName(Nodo * izquierda, Nodo * derecha)
 {
 	Persona x = derecha->GetPersona(),temp;
 	Nodo  *j = izquierda ,*i = izquierda->GetPrev();
@@ -389,7 +419,57 @@ Nodo * Doble::_quickSort(Nodo * izquierda, Nodo * derecha)
 		return i;
 }
 
+void Doble::sortByBrithDay()
+{
+	quickSort_byBrithDay(_Raiz, _Fin);
+}
 
+void Doble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
+{
+	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
+	{
+		if ((derecha->GetPrev() != NULL) | (izquierda->GetNext() != NULL)) {
+			Nodo *p = _quickSort_byBrithDay(izquierda, derecha);
+			if (p != NULL) quickSort_byBrithDay(izquierda, p->GetPrev());
+			if (p != NULL) quickSort_byBrithDay(p->GetNext(), derecha);
+		}
+	}
+}
+
+Nodo * Doble::_quickSort_byBrithDay(Nodo * derecha, Nodo * izquierda)
+{
+	Persona x = derecha->GetPersona(), temp;
+	Nodo  *j = izquierda, *i = izquierda->GetPrev();
+	while (j != derecha)
+	{
+		if (j == NULL)return NULL;
+		if (j->GetPersona().GetBD(2) < x.GetBD(2))
+		{
+			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(1) < x.GetBD(1))) {// intercambia de lugar la mayor por la menor.
+			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		if ((j->GetPersona().GetBD(2) == x.GetBD(1)) && (j->GetPersona().GetBD(1) == x.GetBD(1)) && (j->GetPersona().GetBD(0) < x.GetBD(0))) {// intercambia de lugar la mayor por la menor.
+			
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		j = j->GetNext();
+	}
+	i = (i == NULL) ? izquierda : i->GetNext();
+	temp = i->GetPersona();
+	i->setPersona(derecha->GetPersona());
+	derecha->setPersona(temp);
+	return i;
+}
 
 void RSimple::push_back(Nodo * nodo)
 {
@@ -534,6 +614,43 @@ void RSimple::sortByName()
 
 }
 
+void RSimple::sortByBrithDay()
+{
+	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
+	Persona temp;
+	int tam = size(), tam2 = size();
+	bool orden = true;
+	for (int i = 0; i < tam - 1; i++)
+	{
+		actual = _Raiz->GetNext();
+		anterior = _Raiz;
+		for (int j = 0; j < tam2; j++)//
+		{
+			if (actual->GetPersona().GetBD(2) < anterior->GetPersona().GetBD(2)) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+				orden = false;
+			}
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(2)) && (actual->GetPersona().GetBD(1) < anterior->GetPersona().GetBD(1))) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+			}
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(2)) && (actual->GetPersona().GetBD(1) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(0) < anterior->GetPersona().GetBD(0))) {// intercambia de lugar la mayor por la menor.
+				temp = actual->GetPersona();
+				actual->setPersona(anterior->GetPersona());
+				anterior->setPersona(temp);
+			}
+
+			actual = actual->GetNext();
+			anterior = anterior->GetNext();
+		}
+		if (orden == true) break;
+		tam2--;
+	}
+}
+
 void RDoble::push_back(Nodo * nodo)
 {
 	if (_Raiz != NULL)
@@ -649,24 +766,24 @@ void RDoble::sortByName()
 {
 	_Raiz->setPrev(NULL);
 	_Fin->setNext(NULL);
-	quickSort(_Raiz, _Fin);
+	quickSort_byName(_Raiz, _Fin);
 	_Fin->setNext(_Raiz);
 	_Raiz->setPrev(_Fin);
 }
 
-void RDoble::quickSort(Nodo * izquierda, Nodo * derecha)
+void RDoble::quickSort_byName(Nodo * izquierda, Nodo * derecha)
 {
 	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
 	{
 		if ((derecha->GetPrev() != NULL) | (izquierda->GetNext() != NULL)) {
-			Nodo *p = _quickSort(izquierda, derecha);
-			if (p != NULL) quickSort(izquierda, p->GetPrev());
-			if (p != NULL) quickSort(p->GetNext(), derecha);
+			Nodo *p = _quickSort_byName(izquierda, derecha);
+			if (p != NULL) quickSort_byName(izquierda, p->GetPrev());
+			if (p != NULL) quickSort_byName(p->GetNext(), derecha);
 		}
 	}
 }
 
-Nodo * RDoble::_quickSort(Nodo * izquierda, Nodo *derecha)
+Nodo * RDoble::_quickSort_byName(Nodo * izquierda, Nodo *derecha)
 {
 	Persona x = derecha->GetPersona(), temp;
 	Nodo  *j = izquierda, *i = izquierda->GetPrev();
@@ -676,6 +793,58 @@ Nodo * RDoble::_quickSort(Nodo * izquierda, Nodo *derecha)
 		if ((j->GetPersona().GetLName() + j->GetPersona().GetFName()) < (x.GetLName() + x.GetFName()))
 		{
 			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		j = j->GetNext();
+	}
+	i = (i == NULL) ? izquierda : i->GetNext();
+	temp = i->GetPersona();
+	i->setPersona(derecha->GetPersona());
+	derecha->setPersona(temp);
+	return i;
+}
+
+void RDoble::sortByBrithDay()
+{
+	quickSort_byBrithDay(_Raiz, _Fin);
+}
+
+void RDoble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
+{
+	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
+	{
+		if ((derecha->GetPrev() != NULL) | (izquierda->GetNext() != NULL)) {
+			Nodo *p = _quickSort_byBrithDay(izquierda, derecha);
+			if (p != NULL) quickSort_byBrithDay(izquierda, p->GetPrev());
+			if (p != NULL) quickSort_byBrithDay(p->GetNext(), derecha);
+		}
+	}
+}
+
+Nodo * RDoble::_quickSort_byBrithDay(Nodo * derecha, Nodo * izquierda)
+{
+	Persona x = derecha->GetPersona(), temp;
+	Nodo  *j = izquierda, *i = izquierda->GetPrev();
+	while (j != derecha)
+	{
+		if (j == NULL)return NULL;
+		if (j->GetPersona().GetBD(2) < x.GetBD(2))
+		{
+			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(2) < x.GetBD(2))) {// intercambia de lugar la mayor por la menor.
+			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
+		}
+		if ((j->GetPersona().GetBD(2) == x.GetBD(2) && (j->GetPersona().GetBD(1) == x.GetBD(2)) && (j->GetPersona().GetBD(0) < x.GetBD(0)))) {// intercambia de lugar la mayor por la menor.
+
 			temp = i->GetPersona();
 			i->setPersona(j->GetPersona());
 			j->setPersona(temp);
