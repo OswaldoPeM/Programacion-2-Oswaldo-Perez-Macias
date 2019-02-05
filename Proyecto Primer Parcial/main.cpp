@@ -166,6 +166,7 @@ void subb(Lista*lista, char opc = '\0',bool listo=false) {
 }
 void menu(Lista* lista, char opc='\0') {
 	while (opc!='9') {
+		system("pause");
 		system("cls");
 		std::cout << "Que desea hacer?\nPresiona 1 si desea saber el tamaño de la lista\nPresiona 2 si quiere ordenar la lista\nPresione 3 para agregar una persona nueva a la lista\nPresiona 4 si desea saber la ubicacion de alguna persona\nPresione 5 si desea Imprimir la lista\nPresione 6 si lo que desea es  extraer a una persona de la lista\nPresiona 7 para vaciar la lista\nPresione 8 para crear una nueva lista\nPresiona 9 para cerrar el programa" << std::endl;
 		std::cin >> opc;
@@ -193,6 +194,10 @@ void menu(Lista* lista, char opc='\0') {
 			lista->clear();
 			break;
 		case'8':
+			lista->clear();
+			delete lista;
+			Lista*lista = NULL;
+			lista = defLista(lista);
 			crearLista(lista);
 			break;
 		default:
