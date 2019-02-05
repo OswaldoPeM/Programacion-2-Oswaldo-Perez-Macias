@@ -23,10 +23,10 @@ void Lista::print()
 	Nodo* temp = _Raiz;
 	int x = 0;
 	if (_Raiz != NULL) {
-		std::cout << "Apellido,Nombre,EMail,Fecha" << std::endl;
+		std::cout << "Apellido,Nombre,EMail,Fecha(DD/MM/YYYY)" << std::endl;
 		while (temp != _Fin)
 		{
-			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << ',' << temp->GetPersona().GetBD(1) << ',' << temp->GetPersona().GetBD(2) << endl;
+			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
 			temp = temp->GetNext();
 		}
 		return;
@@ -226,12 +226,12 @@ void Simple::sortByBrithDay()
 				anterior->setPersona(temp);
 				orden = false;
 			}
-			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(1) < anterior->GetPersona().GetBD(1))) {// intercambia de lugar la mayor por la menor.
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(2)) && (actual->GetPersona().GetBD(1) < anterior->GetPersona().GetBD(1))) {// intercambia de lugar la mayor por la menor.
 				temp = actual->GetPersona();
 				actual->setPersona(anterior->GetPersona());
 				anterior->setPersona(temp);
 			}
-			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(1) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(0) < anterior->GetPersona().GetBD(0))) {// intercambia de lugar la mayor por la menor.
+			if ((actual->GetPersona().GetBD(2) == anterior->GetPersona().GetBD(2)) && (actual->GetPersona().GetBD(1) == anterior->GetPersona().GetBD(1)) && (actual->GetPersona().GetBD(0) < anterior->GetPersona().GetBD(0))) {// intercambia de lugar la mayor por la menor.
 				temp = actual->GetPersona();
 				actual->setPersona(anterior->GetPersona());
 				anterior->setPersona(temp);

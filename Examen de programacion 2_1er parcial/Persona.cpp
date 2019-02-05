@@ -82,6 +82,9 @@ void Persona::constPersona(string LName, string FName, string EMail, string BD)
 		_fecha[i] = strToInt(buffer);
 		i++;
 	}
+	x = _fecha[1];
+	_fecha[1] = _fecha[0];
+	_fecha[0] = x;
 	return;
 }
 
