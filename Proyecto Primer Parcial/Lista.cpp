@@ -255,7 +255,7 @@ bool Lista::isThis(Nodo * nodo)
 	std::cout << "Esta seguro de que esta es la persona?\n Presiones 's' si es asi\n" << std::endl;
 	char opc = '\0';
 	std::cin >> opc;
-	if ((opc != 's') | (opc != 'S'))return false;
+	if (opc != 's')return false;
 	return true;
 }
 
