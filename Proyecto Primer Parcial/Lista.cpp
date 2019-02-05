@@ -843,7 +843,7 @@ Nodo * RDoble::_quickSort_byBrithDay(Nodo * derecha, Nodo * izquierda)
 			i->setPersona(j->GetPersona());
 			j->setPersona(temp);
 		}
-		if ((j->GetPersona().GetBD(2) == x.GetBD(2) && (j->GetPersona().GetBD(1) == x.GetBD(2)) && (j->GetPersona().GetBD(0) < x.GetBD(0)))) {// intercambia de lugar la mayor por la menor.
+		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(1) == x.GetBD(2)) && (j->GetPersona().GetBD(0) < x.GetBD(0))) {// intercambia de lugar la mayor por la menor.
 
 			temp = i->GetPersona();
 			i->setPersona(j->GetPersona());
