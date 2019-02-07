@@ -795,7 +795,7 @@ void RDoble::delete_at(int lugar)
 	for (int i = 0; i < lugar; i++)
 	{
 		temp2 = temp1;
-		if ((temp2 == NULL) | (temp2 == _Raiz) && (i != 0)) { std::cout << "Lo siento la direccion donde quiere borrar a la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
+		if (temp1==_Fin) { std::cout << "Lo siento la direccion donde quiere borrar a la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
 		temp1 = temp1->GetNext();
 	}
 	if (temp1 == _Fin) _Fin = temp2;
