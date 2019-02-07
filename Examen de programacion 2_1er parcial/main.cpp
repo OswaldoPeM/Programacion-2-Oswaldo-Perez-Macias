@@ -346,7 +346,7 @@ int main() {
 	lista=defLista(lista);
 	crearLista(lista);
 	menu(lista);
-
+	lista->clear();
 	delete lista;
 
 	return 0;
