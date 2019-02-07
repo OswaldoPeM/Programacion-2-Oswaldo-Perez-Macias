@@ -1,7 +1,5 @@
 #include "Lista.h"
 
-
-
 Nodo * Lista::GetRaiz()
 {
 		return _Raiz;
@@ -17,9 +15,9 @@ Nodo * Lista::GetFin()
 
 void Lista::clear()
 {
-	if (_Raiz != NULL) {
-		_Fin->setNext(NULL);
-		delete _Raiz;
+	if (_Raiz != NULL) {// si la lista no esta vacia
+		_Fin->setNext(NULL);// al ultimo nodo de la lista lo deja sin nodo siguiente, pues el destructor de Nodo raiz, desecadenara
+		delete _Raiz;		// una reaccion en cadena que eliminara todos los nodos
 		_Raiz = NULL;
 	}
 	std::cout << "\n\nLista vacia\n" << std::endl;
@@ -29,14 +27,14 @@ void Lista::print()
 {
 	Nodo* temp = _Raiz;
 	if (_Raiz != NULL) {
-		std::cout << "Apellido,Nombre,EMail,Fecha(DD/MM/YYYY)" << std::endl;
+		std::cout << "Apellido,Nombre,EMail,Fecha(DD/MM/YYYY)" << std::endl;// formato con el que se imprimira la lista
 		while (temp != _Fin)
 		{
 			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
-			temp = temp->GetNext();
+			temp = temp->GetNext();// imprime los datos y da un salto de linea
 		}
 		std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
-		return;
+		return;// es while que siempre termina apuntando a la ultma persona asi que se tiene que imprimir de manera individual. ///podria arreglarse haciendo un for con el tamnio de la lista
 	}
 	std::cout << "\n\nLista vacia\n" << std::endl;
 }
@@ -46,7 +44,7 @@ void Simple::push_back(Nodo * nodo)
 	Nodo* temp1 = _Raiz;
 	if (_Raiz != NULL)
 	{
-		while (temp1!= _Fin)
+		while (temp1!= _Fin)//va hasta el fin de la lista, ahi hace referencia al nuevo nodo, seteandolo como el ultimo en la lista
 		{
 			temp1 = temp1->GetNext();
 		}
@@ -54,7 +52,7 @@ void Simple::push_back(Nodo * nodo)
 		_Fin = nodo;
 		return;
 	}
-	_Raiz = nodo;
+	_Raiz = nodo;//si la lista esta vacia hara del unico nodo raiz y fin
 	_Fin = nodo;
 }
 
@@ -62,32 +60,33 @@ void Simple::push_front(Nodo * nodo)
 {
 	if (_Raiz != NULL)
 	{
-		nodo->setNext(_Raiz);
+		nodo->setNext(_Raiz);// se vinculara la raiz como siguiente del nuevo nodo y el nuevo nodo sera seteado como la raiz.
 		_Raiz = nodo;
 	return;
 	}
-	_Raiz = nodo;
+	_Raiz = nodo; //igual que en push_Back, si esta vacia la lista, el nodo sera raiz y fin.
 	_Fin = nodo;
 }
 
 void Simple::insert_at(Nodo * nodo, int lugar)
 {
-	if (lugar <= 0) {
-		push_front(nodo);
+	if (lugar < 0) {
+		push_front(nodo);// si el indice introducido por el usuario es 0, hara un pushfront al nodo y retornara.
 		return;
 	}
 	Nodo* temp = _Raiz;
 	int pos = 0;
-	while (pos != lugar)
+	while (pos != lugar)// hasta que no se llega a la posicion se recorrera la lista
 	{
 		pos++;
 		temp = temp->GetNext();
 		if ((temp == _Fin) && (lugar != pos)) {
-			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)\nLa persona se a agregado al final de la lista" << std::endl;
+			push_back(nodo);// si el indice llega a el ultimo lugar y aun no llegamos al objetico se re incertara el nodo al final de la lista
 			return;
 		}
 	}
-	if (temp != _Fin) {
+	if (temp != _Fin) {// si el nodo ultimo a donde se quiere agregar es el final, simplemente se hace un pushback
 		nodo->setNext(temp->GetNext());
 		temp->setNext(nodo);
 		return;
@@ -97,7 +96,7 @@ void Simple::insert_at(Nodo * nodo, int lugar)
 
 void Simple::delete_at(int lugar)
 {
-	if (lugar<0)
+	if (lugar<0)//similar a insert, si el numero ingresado es 0, se llamara a la funcion de borrar el primero.
 	{
 		delete_first();
 		return;
@@ -121,11 +120,11 @@ void Simple::delete_at(int lugar)
 	}
 	_Fin = temp2;
 	temp2->setNext(NULL);
-	temp1->setNext(NULL);
+	temp1->setNext(NULL);// Si llega a ser el indice final de la lista, hay que dejar siempre al ultimo puntero, apuntando a nulo
 	delete temp1;
 }
 
-bool Lista::FindByName(string nombre, string apellido)
+bool Lista::FindByName(string nombre, string apellido)//busqueda por nombre y apellido
 {
 	Nodo* temp = _Raiz;
 	int x = -1;
@@ -133,19 +132,19 @@ bool Lista::FindByName(string nombre, string apellido)
 		while (temp != _Fin)
 		{
 			x++;
-			if (temp->GetPersona().GetLName() != apellido)
+			if (temp->GetPersona().GetLName() != apellido)// si coicide con el apellido se evaluara su nombre
 			{
 				temp = temp->GetNext();
 				continue;
 			}
-			if (temp->GetPersona().GetFName() != nombre) {
+			if (temp->GetPersona().GetFName() != nombre) {// si coincide su nombre y apellido se preguntara si es la persona que estas buscando
 				temp = temp->GetNext();
 				continue;
 			}
 			if (isThis(temp))
 			{
 				std::cout << "La persona esta persona se encuentra en el lugar: " << x << std::endl;
-				return true;
+				return true;//si es la persona que buscas te dira su ubicacion en el indice, y dara de valor de retorno positivo
 			}
 			temp = temp->GetNext();
 		}
@@ -163,7 +162,7 @@ int Lista::size()
 		Nodo* temp = _Raiz;
 		while (temp != _Fin)
 		{
-			temp = temp->GetNext();
+			temp = temp->GetNext(); // aumenta x hasta que se llega al final, despues se le suma uno mas para dar el tamanio real de la lista
 			x++;
 		}
 		x++;
@@ -175,38 +174,36 @@ int Lista::size()
 
 Nodo * Simple::pop_back()
 {
-
 	if (_Raiz != _Fin) {
 		Nodo* temp1 = _Raiz, *temp2 = 0;
 		while (temp1 != _Fin)
 		{
 			temp2 = temp1;
-			temp1 = temp1->GetNext();
+			temp1 = temp1->GetNext();// recorre la lista hasta el final y saca de la lista ese nodo, y a la vez hace nulo el puntero siguiente de nuestro ahora ultimo nodo
 		}
 		_Fin = temp2;
 		temp2->setNext(NULL);
 		temp1->setNext(NULL);
 		return temp1;
-	}
+	}// ai llegara a ser el unico nodo en la lista se hace nula la raiz y se regresa el nodo
 	_Raiz = NULL;
 	return _Fin;
 }
 
-Nodo * Simple::pop_front()
+Nodo * Simple::pop_front()//misma logica que en el pasado pero ahora el primero de la lista
 {
 	Nodo* temp = _Raiz;
-	if (temp != _Fin)
+	if (_Raiz != _Fin)
 	{
 		_Raiz = _Raiz->GetNext();
 		temp->setNext(NULL);
 		return temp;
 	}
-	temp->setNext(NULL);
 	_Raiz = NULL;
-	return temp;
+	return _Fin;
 }
 
-void Simple::delete_last()
+void Simple::delete_last()//borra ultimo
 {
 	if (_Raiz != NULL) {
 		Nodo* temp = _Raiz;
@@ -215,7 +212,7 @@ void Simple::delete_last()
 	return;
 }
 
-void Simple::delete_first()
+void Simple::delete_first()//borra primero
 {
 	if (_Raiz != NULL) {
 		delete pop_front();
@@ -223,7 +220,7 @@ void Simple::delete_first()
 	return;
 }
 
-void Simple::sortByName()
+void Simple::sortByName()//hace un acomodo alfabetico de la lista
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
@@ -250,7 +247,7 @@ void Simple::sortByName()
 
 }
 
-void Simple::sortByBrithDay()
+void Simple::sortByBrithDay()// hace un acomodo tipo burbuja en la lista por fecha de nacimiento
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
@@ -290,7 +287,7 @@ void Simple::sortByBrithDay()
 
 
 
-bool Lista::isThis(Nodo * nodo)
+bool Lista::isThis(Nodo * nodo)//te muestra los datos de una persona y tu confirmas si son los datos que esperabas ver
 {
 	std::cout << "/nNombre: " << nodo->GetPersona().GetLName() << " " << nodo->GetPersona().GetFName() <<"\nFecha de nacimiento: " << nodo->GetPersona().GetBD(0) << '/' << nodo->GetPersona().GetBD(1) <<'/' << nodo->GetPersona().GetBD(2) << "\nEmail: " << nodo->GetPersona().GetEMail() << std::endl;
 	std::cout << "Esta seguro de que esta es la persona?\n Presiones 's' si es asi\n" << std::endl;
@@ -359,7 +356,8 @@ void Doble::insert_at(Nodo * nodo, int lugar)
 	{
 		temp1 = temp1->GetNext();
 		if (temp1 == NULL) {
-			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)\nLa persona se a agregado al final de la lista" << std::endl;
+			push_back(nodo);
 			return;
 		}
 		pos++;
@@ -418,7 +416,7 @@ Nodo * Doble::pop_back()
 Nodo * Doble::pop_front()
 {
 	Nodo* temp = _Raiz;
-	if (temp!=_Fin)
+	if (_Raiz!=_Fin)
 	{
 	_Raiz = _Raiz->GetNext();
 	_Raiz->setPrev(NULL);
@@ -427,7 +425,7 @@ Nodo * Doble::pop_front()
 	}
 	temp->setNext(NULL);
 	_Raiz = NULL;
-	return temp;
+	return _Fin;
 	
 }
 
@@ -467,7 +465,7 @@ Nodo * Doble::_quickSort_byName(Nodo * izquierda, Nodo * derecha)
 		if (j == NULL)return NULL;
 		if ((j->GetPersona().GetLName() + j->GetPersona().GetFName()) < (x.GetLName() + x.GetFName()))
 		{
-			i = (i == NULL) ? izquierda : i->GetNext();
+			i = (i == NULL) ? izquierda : i->GetNext();// si llegara a ser nulo se convierte en la izquierda, si no avanza un nodo.
 			temp = i->GetPersona();
 			i->setPersona(j->GetPersona());
 			j->setPersona(temp);
@@ -562,7 +560,8 @@ void RSimple::insert_at(Nodo * nodo, int lugar)
 		pos++;
 		temp = temp->GetNext();
 		if ((temp == _Fin) && (lugar != pos)) {
-			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)\nLa persona se a agregado al final de la lista" << std::endl;
+			push_back(nodo);
 			return;
 		}
 	}
@@ -770,7 +769,8 @@ void RDoble::insert_at(Nodo * nodo, int lugar)
 		pos++;
 		temp1 = temp1->GetNext();
 		if ((temp1 == _Fin) && (lugar != pos)) { 
-			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)\nLa persona se a agregado al final de la lista" << std::endl;
+			push_back(nodo);
 			return;
 		}
 	}
@@ -928,7 +928,7 @@ Nodo * RDoble::_quickSort_byBrithDay(Nodo * izquierda, Nodo * derecha)
 		}
 		j = j->GetNext();
 	}
-	i = (i == NULL) ? izquierda : i->GetNext();
+	i = (i == NULL) ? izquierda : i->GetNext();// 
 	temp = i->GetPersona();
 	i->setPersona(derecha->GetPersona());
 	derecha->setPersona(temp);
