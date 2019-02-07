@@ -12,7 +12,7 @@ public:
 	virtual bool FindByName(std::string nombre, std::string apellido);//imprime el lugar de la lista buscando por nombre y apellido
 	virtual void sortByName() = 0;//Organiza por Nombre 
 	virtual void sortByBrithDay() = 0;//Organiza la lista por Fecha de nacimiento
-	//virtual void sortByEMail() = 0;//Organiza por  EMail
+	//virtual void sortByEMail() = 0;//Organiza por  EMail 
 	virtual void push_back(Nodo* nodo) = 0;// manda a el ultimo lugar de la lista un nodo
 	virtual void push_front(Nodo* nodo) = 0;//manda hasta el frente a un nodo
 	virtual void insert_at(Nodo* nodo, int lugar) = 0;//inserta en un lugar el nodo

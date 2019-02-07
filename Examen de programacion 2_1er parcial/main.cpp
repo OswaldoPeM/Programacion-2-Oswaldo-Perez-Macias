@@ -17,21 +17,20 @@ Persona nuevaPersona(bool listo = false) {
 		persona.setEMail(tempstr);
 		std::cout << "introdusca anio de nacimiento: ";
 		std::cin >> x;
-		fecha[0] = x;
+		fecha[2] = x;
 		std::cout << "introdusca mes de nacimiento: ";
 		std::cin >> x;
 		fecha[1] = x;
 		std::cout << "introdusca dia de nacimiento: ";
 		std::cin >> x;
-		fecha[2] = x;
+		fecha[0] = x;
 		persona.setBD(fecha);
 		nodo.setPersona(persona);
 		listo = lista.isThis(&nodo);
-
-
 	}
 	return persona;
 }
+bool ordenA = false;
 Lista* crearLista(Lista *lista) {
 	ifstream inFile("inputdata.txt", ios_base::in);//Lectura del archivo
 	string linea, dato, arreglo[4]; // donde se guardara cada dato
@@ -55,7 +54,7 @@ Lista* crearLista(Lista *lista) {
 	std::cout << "Se a creado una lista apartir del archivo txt \"inputdata\"" << std::endl;
 	return lista;
 }
-
+bool ordenB = false;
 Lista* defLista(Lista* lista, char opc = '\0') {
 	std::cout << "Si desea una lista Simple presione 1\nSi desea una lista Doble presione 2\nSi desea una lista Simple Enlazada presione 3\nSi desea una lista Doble enlazada presione 4\n" << std::endl;
 	std::cin >> opc;
@@ -91,11 +90,21 @@ void sort(Lista* lista, char opc = '\0', bool listo = false) {
 			switch (opc)
 			{
 			case'1':
+				if (!ordenA)
+				{
 				lista->sortByName();
+				ordenA = true;
+				ordenB = false;
+				}
 				listo = true;
 				break;
 			case'2':
+				if (!ordenB)
+				{
 				lista->sortByBrithDay();
+				ordenB = true;
+				ordenA = false;
+				}
 				listo = true;
 				break;
 			default:
@@ -104,43 +113,46 @@ void sort(Lista* lista, char opc = '\0', bool listo = false) {
 		}
 		return;
 	}
-	std::cout << "Lista vacia" << std::endl;
+	std::cout << "\n\nLista vacia\n" << std::endl;
 }
 
 void add(Lista* lista, char opc = '\0', bool listo = false) {
-	if (lista->GetRaiz() != NULL) {
-		Persona persona = nuevaPersona();
-		Nodo* nodo = new Nodo;
-		int x = 0;
-		nodo->setPersona(persona);
-		while (!listo)
+
+	Persona persona = nuevaPersona();
+	Nodo* nodo = new Nodo;
+	int x = 0;
+	nodo->setPersona(persona);
+	while (!listo)
+	{
+		system("cls");
+		std::cout << "\nPresiona 1 para agregar al principio de la lista \nPresione 2 para agregar al final de la lista\nPara 3 para agregar en un punto especifico de la lista\n" << std::endl;
+		std::cin >> opc;
+		switch (opc)
 		{
-			system("cls");
-			std::cout << "\nPresiona 1 para agregar al principio de la lista \nPresione 2 para agregar al final de la lista\nPara 3 para agregar en un punto especifico de la lista\n" << std::endl;
-			std::cin >> opc;
-			switch (opc)
-			{
-			case'1':
-				lista->push_front(nodo);
-				listo = true;
-				break;
-			case'2':
-				lista->push_back(nodo);
-				listo = true;
-				break;
-			case'3':
+		case'1':
+			lista->push_front(nodo);
+			listo = true;
+			break;
+		case'2':
+			lista->push_back(nodo);
+			listo = true;
+			break;
+		case'3':
+			if (lista->GetRaiz() != NULL) {
 				std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
 				std::cin >> x;
-				lista->insert_at(nodo, x);
-				listo = true;
-				break;
-			default:
-				break;
+				lista->insert_at(nodo, x - 1);
+				return;
 			}
+			std::cout << "Esta lista esta vacia, por lo que esta persona sera afregada automaticamente" << std::endl;
+			lista->push_front(nodo);
+
+			listo = true;
+			break;
+		default:
+			break;
 		}
-		return;
 	}
-	std::cout << "Lista vacia";
 }
 void find(Lista* lista, char opc = '\0', bool listo = false) {
 	if (lista->GetRaiz() != NULL) {
@@ -154,7 +166,7 @@ void find(Lista* lista, char opc = '\0', bool listo = false) {
 		lista->FindByName(nombre, apellido);
 		return;
 	}
-	std::cout << "Lista vacia";
+	std::cout << "\n\nLista vacia\n";
 
 }
 void subb(Lista*lista, char opc = '\0',bool listo=false) {
@@ -176,9 +188,9 @@ void subb(Lista*lista, char opc = '\0',bool listo=false) {
 				listo = true;
 				break;
 			case'3':
-				std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
+				std::cout << "Introdusca el indice donde eliminar a la persona" << std::endl;
 				std::cin >> x;
-				lista->delete_at(x);
+				lista->delete_at(x-1);
 				listo = true;
 				break;
 			case'0':
@@ -189,14 +201,15 @@ void subb(Lista*lista, char opc = '\0',bool listo=false) {
 		}
 		return;
 	}
-	std::cout << "Lista vacia" << std::endl;
+	std::cout << "\n\nLista vacia\n" << std::endl;
 }
 void popedpersona(Lista* lista, Nodo* pop, char opc = '\0', bool listo = false) {
 	pop->setPrev(NULL);
+	int x = 0;
 	while (!listo)
 	{
 		system("cls");
-		std::cout << "Presione 1 para agregar a esta persona al principio de la lista\nPresione 2 para agregar esta persona al final de la lista\nPresione 3 para borrar a esta persona\nPresione 0 para volver al menu anterior" << std::endl;
+		std::cout << "Presione 1 para agregar a esta persona al principio de la lista\nPresione 2 para agregar esta persona al final de la lista\nPresione 3 para agregar a esta persona en un indice\nPresione 4 para borrar persona\nPresione 0 para volver al menu anterior" << std::endl;
 		std::cin >> opc;
 		switch (opc)
 		{
@@ -209,6 +222,17 @@ void popedpersona(Lista* lista, Nodo* pop, char opc = '\0', bool listo = false) 
 			listo = true;
 			break;
 		case'3':
+			if (lista->GetRaiz() != NULL) {
+				std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
+				std::cin >> x;
+				lista->insert_at(pop, x - 1);
+				return;
+			}
+			std::cout << "Esta lista esta vacia, por lo que esta persona sera afregada automaticamente" << std::endl;
+			lista->push_front(pop);
+			listo = true;
+			break;
+		case'4':
 			pop->setNext(NULL);
 			delete pop;
 			listo = true;
@@ -249,14 +273,14 @@ void pop(Lista* lista,char opc='\0',bool listo=false) {
 		}
 		return;
 	}
-	std::cout << "Lista vacia\n" << std::endl;
+	std::cout << "\n\nLista vacia\n" << std::endl;
 
 }
 void menu(Lista* lista, char opc='\0') {
 	while (opc!='0') {
 		system("pause");
 		system("cls");
-		std::cout << "Que desea hacer?\nPresiona 1 si desea saber el tamaño de la lista\nPresiona 2 si quiere ordenar la lista\nPresione 3 para agregar una persona nueva a la lista\nPresiona 4 si desea saber la ubicacion de alguna persona\nPresione 5 si desea Imprimir la lista\nPresione 6 si lo que desea es eliminar a una persona de la lista\nPresiona 7 para vaciar la lista\nPresione 8 para crear una nueva lista\nPresione 9 si quiere extraer una persona de la lista\nPresiona 0 para cerrar el programa\n" << std::endl;
+		std::cout << "Que desea hacer?\nPresiona 1 si desea saber el tamaño de la lista\nPresiona 2 si quiere ordenar la lista\nPresione 3 para agregar una persona nueva a la lista\nPresiona 4 si desea saber la ubicacion de alguna persona\nPresione 5 si desea Imprimir la lista\nPresione 6 si lo que desea es eliminar a una persona de la lista\nPresiona 7 para vaciar la lista\nPresione 8 para crear una nueva lista\nPresione 9 si quiere extraer una persona de la lista\nPresiona 0 para cerrar el programa" << std::endl;
 		std::cin >> opc;
 		switch (opc)
 		{
@@ -280,18 +304,22 @@ void menu(Lista* lista, char opc='\0') {
 			break;
 		case'7':
 			lista->clear();
+			ordenA = false;
+			ordenB = false;
 			break;
 		case'8':
 			delete lista;
 			lista = NULL;
 			lista = defLista(lista);
 			crearLista(lista);
+			ordenA = false;
+			ordenB = false;
 			break;
 		case'9':
 			pop(lista);
 			break;
 		default:
-			std::cout << "\nNo has seleccionado ninguna accion valida\n" << std::endl;
+			std::cout << "\nNo has seleccionado ninguna accion valida" << std::endl;
 			break;
 		}
 	}

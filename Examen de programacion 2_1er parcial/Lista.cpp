@@ -1,5 +1,7 @@
 #include "Lista.h"
 
+
+
 Nodo * Lista::GetRaiz()
 {
 		return _Raiz;
@@ -10,6 +12,7 @@ Nodo * Lista::GetFin()
 	if (_Raiz != NULL) {
 		return _Fin;
 	}
+	return NULL;
 }
 
 void Lista::clear()
@@ -19,13 +22,12 @@ void Lista::clear()
 		delete _Raiz;
 		_Raiz = NULL;
 	}
-	std::cout << "\n\n\nLista vacia" << std::endl;
+	std::cout << "\n\nLista vacia\n" << std::endl;
 }
 
 void Lista::print()
 {
 	Nodo* temp = _Raiz;
-	int x = 0;
 	if (_Raiz != NULL) {
 		std::cout << "Apellido,Nombre,EMail,Fecha(DD/MM/YYYY)" << std::endl;
 		while (temp != _Fin)
@@ -36,6 +38,7 @@ void Lista::print()
 		std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
 		return;
 	}
+	std::cout << "\n\nLista vacia\n" << std::endl;
 }
 
 void Simple::push_back(Nodo * nodo)
@@ -69,25 +72,36 @@ void Simple::push_front(Nodo * nodo)
 
 void Simple::insert_at(Nodo * nodo, int lugar)
 {
+	if (lugar <= 0) {
+		push_front(nodo);
+		return;
+	}
 	Nodo* temp = _Raiz;
 	int pos = 0;
 	while (pos != lugar)
 	{
-		if (temp == _Fin) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
-		temp = temp->GetNext();
 		pos++;
+		temp = temp->GetNext();
+		if ((temp == _Fin) && (lugar != pos)) {
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			return;
+		}
 	}
-	if (temp == _Fin) {
+	if (temp != _Fin) {
+		nodo->setNext(temp->GetNext());
 		temp->setNext(nodo);
-		_Fin = nodo;
 		return;
 	}
-	nodo->setNext(temp->GetNext());
-	temp->setNext(nodo);
+	push_back(nodo);
 }
 
 void Simple::delete_at(int lugar)
 {
+	if (lugar<0)
+	{
+		delete_first();
+		return;
+	}
 	Nodo* temp1 = _Raiz, *temp2 = 0;
 	int pos = 0;
 	while (pos != lugar) {
@@ -124,7 +138,10 @@ bool Lista::FindByName(string nombre, string apellido)
 				temp = temp->GetNext();
 				continue;
 			}
-			if (temp->GetPersona().GetFName() != nombre) continue;
+			if (temp->GetPersona().GetFName() != nombre) {
+				temp = temp->GetNext();
+				continue;
+			}
 			if (isThis(temp))
 			{
 				std::cout << "La persona esta persona se encuentra en el lugar: " << x << std::endl;
@@ -152,13 +169,14 @@ int Lista::size()
 		x++;
 		return x;
 	}
-	std::cout << "La lista esta vacia" << std::endl;
+	std::cout << "\n\nLa lista esta vacia\n" << std::endl;
 	return 0;
 }
 
 Nodo * Simple::pop_back()
 {
-	if (_Raiz != NULL) {
+
+	if (_Raiz != _Fin) {
 		Nodo* temp1 = _Raiz, *temp2 = 0;
 		while (temp1 != _Fin)
 		{
@@ -170,18 +188,22 @@ Nodo * Simple::pop_back()
 		temp1->setNext(NULL);
 		return temp1;
 	}
-	return NULL;
+	_Raiz = NULL;
+	return _Fin;
 }
 
 Nodo * Simple::pop_front()
 {
-	if (_Raiz != NULL) {
-		Nodo* temp = _Raiz;
+	Nodo* temp = _Raiz;
+	if (temp != _Fin)
+	{
 		_Raiz = _Raiz->GetNext();
 		temp->setNext(NULL);
 		return temp;
 	}
-	return NULL;
+	temp->setNext(NULL);
+	_Raiz = NULL;
+	return temp;
 }
 
 void Simple::delete_last()
@@ -211,7 +233,7 @@ void Simple::sortByName()
 	{
 		actual = _Raiz->GetNext();
 		anterior = _Raiz;
-		for (int j = 0; j < tam2; j++)//
+		for (int j = 0; j < tam2; j++)
 		{
 			if ((actual->GetPersona().GetLName() + actual->GetPersona().GetFName()) < (anterior->GetPersona().GetLName() + anterior->GetPersona().GetFName())) {// intercambia de lugar la mayor por la menor.
 				temp = actual->GetPersona();
@@ -221,9 +243,9 @@ void Simple::sortByName()
 			}
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
-			tam2--;
 		}
 		if (orden) break;
+		tam2--;
 	}
 
 }
@@ -259,9 +281,9 @@ void Simple::sortByBrithDay()
 			
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
-		tam2--;
 		}
 		if (orden) break;
+		tam2--;
 	}
 }
 
@@ -329,63 +351,84 @@ void Doble::insert_at(Nodo * nodo, int lugar)
 {
 	Nodo* temp1 = _Raiz;
 	int pos = 0;
+	if (lugar < 0) {
+		push_front(nodo);
+		return;
+	}
 	while (pos != lugar)
 	{
 		temp1 = temp1->GetNext();
-		if (temp1 == NULL) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
+		if (temp1 == NULL) {
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			return;
+		}
 		pos++;
 	}
-	if (temp1==_Fin) _Fin = nodo;
-	nodo->setNext(temp1->GetNext());
-	nodo->setPrev(temp1);
-	if(temp1 != _Fin)temp1->GetNext()->setPrev(nodo);
-	temp1->setNext(nodo);
+	if ((temp1 != _Fin) && (temp1->GetNext() != NULL)) {
+		temp1->GetNext()->setPrev(nodo);
+		nodo->setNext(temp1->GetNext());
+	}
+	push_back(nodo);
 }
 
 void Doble::delete_at(int lugar)
 {
+	if (lugar<0) {
+		delete_first();
+		return;
+	}
 	Nodo* temp1 = _Raiz, *temp2 = 0;
-	if (_Raiz != NULL) {
-		for (int i = 0; i < lugar; i++)
-		{
-			temp2 = temp1;
-			temp1 = temp1->GetNext();
-			if (temp1 == NULL) {
-				std::cout << "Lo siento la direccion donde quiere borrar a la persona es inexistente(Se ha sobrepasado)" << std::endl;
-				return;
-			}
-		} 
+	for (int i = 0; i < lugar; i++)
+	{
+		temp2 = temp1;
+		temp1 = temp1->GetNext();
+		if (temp1 == NULL) {
+			std::cout << "Lo siento la direccion donde quiere borrar a la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			return;
+		}
+	}
+	if (temp1 != _Fin) {
 		temp2->setNext(temp1->GetNext());
-		if (temp1->GetNext() != NULL)temp1->GetNext()->setPrev(temp2);
+		temp1->GetNext()->setPrev(temp2);
 		temp1->setNext(NULL);
 		delete temp1;
 		return;
 	}
-	
-	std::cout << "La lista esta vacia" << std::endl;
+	delete_last();
 }
 
 Nodo * Doble::pop_back()
 {
-	Nodo* temp1 = _Raiz, *temp2 = 0;
-	while (temp1 != _Fin)
-	{
-		temp2 = temp1;
-		temp1 = temp1->GetNext();
+	if (_Fin != _Raiz) {
+		Nodo* temp1 = _Raiz, *temp2 = 0;
+		while (temp1 != _Fin)
+		{
+			temp2 = temp1;
+			temp1 = temp1->GetNext();
+		}
+		_Fin = temp2;
+		temp2->setNext(NULL);
+		temp1->setNext(NULL);
+		return temp1;
 	}
-	_Fin = temp2;
-	temp2->setNext(NULL);
-	temp1->setNext(NULL);
-	return temp1;
+	_Raiz = NULL;
+	return _Fin;
 }
 
 Nodo * Doble::pop_front()
 {
 	Nodo* temp = _Raiz;
+	if (temp!=_Fin)
+	{
 	_Raiz = _Raiz->GetNext();
 	_Raiz->setPrev(NULL);
 	temp->setNext(NULL);
 	return temp;
+	}
+	temp->setNext(NULL);
+	_Raiz = NULL;
+	return temp;
+	
 }
 
 void Doble::delete_last()
@@ -443,7 +486,7 @@ void Doble::sortByBrithDay()
 	quickSort_byBrithDay(_Raiz, _Fin);
 }
 
-void Doble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
+void Doble::quickSort_byBrithDay(Nodo* izquierda, Nodo* derecha)
 {
 	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
 	{
@@ -455,28 +498,16 @@ void Doble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
 	}
 }
 
-Nodo * Doble::_quickSort_byBrithDay(Nodo * derecha, Nodo * izquierda)
+Nodo * Doble::_quickSort_byBrithDay(Nodo * izquierda, Nodo * derecha)
 {
 	Persona x = derecha->GetPersona(), temp;
 	Nodo  *j = izquierda, *i = izquierda->GetPrev();
 	while (j != derecha)
 	{
 		if (j == NULL)return NULL;
-		if (j->GetPersona().GetBD(2) < x.GetBD(2))
+		if (j->GetPersona().GetBD(2) * 365 + j->GetPersona().GetBD(1) * 30 + j->GetPersona().GetBD(0) < x.GetBD(2) * 365 + x.GetBD(1) * 30 + x.GetBD(0))
 		{
 			i = (i == NULL) ? izquierda : i->GetNext();
-			temp = i->GetPersona();
-			i->setPersona(j->GetPersona());
-			j->setPersona(temp);
-		}
-		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(1) < x.GetBD(1))) {// intercambia de lugar la mayor por la menor.
-			i = (i == NULL) ? izquierda : i->GetNext();
-			temp = i->GetPersona();
-			i->setPersona(j->GetPersona());
-			j->setPersona(temp);
-		}
-		if ((j->GetPersona().GetBD(2) == x.GetBD(1)) && (j->GetPersona().GetBD(1) == x.GetBD(1)) && (j->GetPersona().GetBD(0) < x.GetBD(0))) {// intercambia de lugar la mayor por la menor.
-			
 			temp = i->GetPersona();
 			i->setPersona(j->GetPersona());
 			j->setPersona(temp);
@@ -520,23 +551,27 @@ void RSimple::push_front(Nodo * nodo)
 
 void RSimple::insert_at(Nodo * nodo, int lugar)
 {
-	if (_Raiz != NULL)
-	{
-		int pos = 0;
-		Nodo* temp1 = _Raiz;
-		while (pos != lugar)
-		{
-			if (temp1 == _Fin) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
-			temp1 = temp1->GetNext();
-			pos++;
-		}
-		if (temp1 = _Fin) _Fin = nodo;
-		if (temp1 = _Raiz) _Raiz = nodo;
-		nodo->setNext(temp1->GetNext());
-		temp1->setNext(nodo);
+	if (lugar <= 0) {
+		push_front(nodo);
 		return;
 	}
-	std::cout << "\n\nLista vacia" << std::endl;
+	int pos = 0;
+	Nodo* temp = _Raiz;
+	while (pos != lugar)
+	{
+		pos++;
+		temp = temp->GetNext();
+		if ((temp == _Fin) && (lugar != pos)) {
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			return;
+		}
+	}
+	if (temp != _Fin) {
+	nodo->setNext(temp->GetNext());
+	temp->setNext(nodo);
+		return;
+	}
+		push_back(nodo);
 }
 
 void RSimple::delete_at(int lugar)
@@ -544,6 +579,10 @@ void RSimple::delete_at(int lugar)
 	if (_Raiz != NULL) {
 		Nodo* temp1 = _Raiz, *temp2 = 0;
 		int pos = 0;
+		if (lugar < 0) {
+			delete_first();
+			return;
+		}
 		while (pos != lugar)
 		{
 			temp2 = temp1;
@@ -551,14 +590,14 @@ void RSimple::delete_at(int lugar)
 			temp1 = temp1->GetNext();
 			pos++;
 		}
-		if (temp1 = _Raiz) {
-			_Raiz = temp1->GetNext();
-			_Fin->setNext(_Raiz);
+		if (temp1 != _Fin) {
+			temp2->setNext(temp1->GetNext());
+			temp1->setNext(NULL);
+			delete temp1;
+			return;
 		}
-		if (temp1 != _Fin) temp2->setNext(temp1->GetNext());
-		if (temp1 == _Fin) _Fin = temp2;
-		temp1->setNext(NULL);
-		delete temp1;
+		delete_last();
+		return;
 	}
 	std::cout << "La lista esta vacia" << std::endl;
 }
@@ -568,15 +607,21 @@ Nodo * RSimple::pop_back()
 {
 	if (_Raiz != NULL)
 	{
-		Nodo* temp1 = _Raiz, *temp2 = 0;
-		while (temp1 != _Fin)
+		if (_Raiz != _Fin)
 		{
-			temp2 = temp1;
-			temp1 = temp1->GetNext();
+			Nodo* temp1 = _Raiz, *temp2 = _Raiz;
+			while (temp1 != _Fin)
+			{
+				temp2 = temp1;
+				temp1 = temp1->GetNext();
+			}
+			temp2->setNext(NULL);
+			_Fin = temp2;
+			temp1->setNext(NULL);
+			return temp1;
 		}
-		temp2->setNext(NULL);
-		_Fin = temp2;
-		return temp1;
+		_Raiz = NULL;
+		return _Fin;
 	}
 	std::cout << "La lista esta vacia" << std::endl;
 	return NULL;
@@ -585,14 +630,15 @@ Nodo * RSimple::pop_back()
 Nodo * RSimple::pop_front()
 {
 	Nodo* temp = _Raiz;
-	if (_Raiz == NULL)
+	if (temp!=_Fin)
 	{
-		_Raiz = _Raiz->GetNext();
-		temp->setNext(NULL);
-		return temp;
+	_Raiz = _Raiz->GetNext();
+	temp->setNext(NULL);
+	return temp;
 	}
-	std::cout << "La lista esta vacia" << std::endl;
-	return NULL;
+	temp->setNext(NULL);
+	_Raiz = NULL;
+	return temp;
 }
 
 void RSimple::delete_last()
@@ -630,9 +676,9 @@ void RSimple::sortByName()
 			}
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
-		tam2--;
 		}
 		if (orden) break;
+		tam2--;
 	}
 
 }
@@ -668,9 +714,9 @@ void RSimple::sortByBrithDay()
 
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
-			tam2--;
 		}
 		if (orden == true) break;
+		tam2--;
 	}
 }
 
@@ -713,38 +759,44 @@ void RDoble::push_front(Nodo * nodo)
 
 void RDoble::insert_at(Nodo * nodo, int lugar)
 {
-	Nodo* temp1 = _Raiz, *temp2 = 0;
+	Nodo* temp1 = _Raiz;
 	int pos = 0;
-	if (lugar == 0) push_front(nodo);
+	if (lugar <= 0) {
+		push_front(nodo);
+		return;
+	}
 	while (pos != lugar)
 	{
-		temp2 = temp1;
-		if (temp1 == _Fin) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
-		temp1 = temp1->GetNext();
 		pos++;
+		temp1 = temp1->GetNext();
+		if ((temp1 == _Fin) && (lugar != pos)) { 
+			std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl;
+			return;
+		}
 	}
-	if (temp1 == _Raiz) _Fin = nodo;
-	nodo->setNext(temp1);
-	nodo->setPrev(temp2);
-	temp2->setNext(nodo);
-	temp1->setPrev(nodo);
+	if (temp1 != _Fin) {
+		nodo->setPrev(temp1);
+		if (temp1->GetNext() != NULL)nodo->setNext(temp1->GetNext());
+		temp1->GetNext()->setPrev(nodo);
+		temp1->setNext(nodo);
+		return;
+	}
+	push_back(nodo);
 }
 
 void RDoble::delete_at(int lugar)
 {
+	if (lugar < 0)
+	{
+		delete_first();
+		return;
+	}
 	Nodo* temp1 = _Raiz, *temp2 = 0;
 	for (int i = 0; i < lugar; i++)
 	{
 		temp2 = temp1;
 		if ((temp2 == NULL) | (temp2 == _Raiz) && (i != 0)) { std::cout << "Lo siento la direccion donde quiere borrar a la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
 		temp1 = temp1->GetNext();
-	}
-	if (temp1 == _Raiz) {
-		_Fin->setNext(_Raiz->GetNext());
-		_Raiz->GetNext()->setPrev(_Fin);
-		_Raiz = _Raiz->GetNext();
-		delete temp1;
-		return;
 	}
 	if (temp1 == _Fin) _Fin = temp2;
 	temp2->setNext(temp1->GetNext());
@@ -757,21 +809,31 @@ void RDoble::delete_at(int lugar)
 
 Nodo * RDoble::pop_back()
 {
-	Nodo* temp=_Fin;
-	_Fin = _Fin->GetPrev();
-	_Fin->setNext(_Raiz);
-	_Raiz->setPrev(_Fin);
-	temp->setNext(NULL);
-	return temp;
+	if (_Raiz != _Fin) {
+		Nodo* temp = _Fin;
+		_Fin = _Fin->GetPrev();
+		_Fin->setNext(_Raiz);
+		_Raiz->setPrev(_Fin);
+		temp->setNext(NULL);
+		return temp;
+	}
+	_Raiz = NULL;
+	return _Fin;
 }
 
 Nodo * RDoble::pop_front()
 {
 	Nodo* temp = _Raiz;
-	_Raiz = _Raiz->GetNext();
-	_Fin->setNext(_Raiz);
-	_Raiz->setPrev(_Fin);
+	if (temp != _Fin)
+	{
+		_Raiz = _Raiz->GetNext();
+		_Fin->setNext(_Raiz);
+		_Raiz->setPrev(_Fin);
+		temp->setNext(NULL);
+		return temp;
+	}
 	temp->setNext(NULL);
+	_Raiz = NULL;
 	return temp;
 }
 
@@ -831,10 +893,14 @@ Nodo * RDoble::_quickSort_byName(Nodo * izquierda, Nodo *derecha)
 
 void RDoble::sortByBrithDay()
 {
+	_Raiz->setPrev(NULL);
+	_Fin->setNext(NULL);
 	quickSort_byBrithDay(_Raiz, _Fin);
+	_Raiz->setPrev(_Fin);
+	_Fin->setNext(_Raiz);
 }
 
-void RDoble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
+void RDoble::quickSort_byBrithDay(Nodo* izquierda, Nodo* derecha)
 {
 	if ((derecha != NULL) && (izquierda != derecha) && (izquierda != NULL))
 	{
@@ -846,28 +912,16 @@ void RDoble::quickSort_byBrithDay(Nodo* derecha, Nodo* izquierda)
 	}
 }
 
-Nodo * RDoble::_quickSort_byBrithDay(Nodo * derecha, Nodo * izquierda)
+Nodo * RDoble::_quickSort_byBrithDay(Nodo * izquierda, Nodo * derecha)
 {
 	Persona x = derecha->GetPersona(), temp;
 	Nodo  *j = izquierda, *i = izquierda->GetPrev();
 	while (j != derecha)
 	{
 		if (j == NULL)return NULL;
-		if (j->GetPersona().GetBD(2) < x.GetBD(2))
+		if (j->GetPersona().GetBD(2)*365+ j->GetPersona().GetBD(1)*30+ j->GetPersona().GetBD(0) < x.GetBD(2)*365+ x.GetBD(1)*30+ x.GetBD(0))
 		{
 			i = (i == NULL) ? izquierda : i->GetNext();
-			temp = i->GetPersona();
-			i->setPersona(j->GetPersona());
-			j->setPersona(temp);
-		}
-		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(2) < x.GetBD(2))) {// intercambia de lugar la mayor por la menor.
-			i = (i == NULL) ? izquierda : i->GetNext();
-			temp = i->GetPersona();
-			i->setPersona(j->GetPersona());
-			j->setPersona(temp);
-		}
-		if ((j->GetPersona().GetBD(2) == x.GetBD(2)) && (j->GetPersona().GetBD(1) == x.GetBD(2)) && (j->GetPersona().GetBD(0) < x.GetBD(0))) {// intercambia de lugar la mayor por la menor.
-
 			temp = i->GetPersona();
 			i->setPersona(j->GetPersona());
 			j->setPersona(temp);
