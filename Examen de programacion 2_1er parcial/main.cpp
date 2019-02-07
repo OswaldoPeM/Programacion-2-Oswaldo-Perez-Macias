@@ -30,7 +30,7 @@ Persona nuevaPersona(bool listo = false) {
 	}
 	return persona;
 }
-bool ordenA = false;
+bool ordenA = false;// se crea bandera para mostrar que una lista esta ordenada por Alfabetico
 Lista* crearLista(Lista *lista) {
 	ifstream inFile("inputdata.txt", ios_base::in);//Lectura del archivo
 	string linea, dato, arreglo[4]; // donde se guardara cada dato
@@ -40,21 +40,21 @@ Lista* crearLista(Lista *lista) {
 	getline(inFile, linea);
 	while (getline(inFile, linea)) {
 		stringstream stream(linea);
-		while (getline(stream, dato,','))
+		while (getline(stream, dato,','))// separa el stream por el char ','
 		{
 			arreglo[i] = dato;
 			i++;
 		}
 		i = 0;
-		persona.constPersona(arreglo[0], arreglo[1], arreglo[2], arreglo[3]);
-		nodo = new Nodo;
-		nodo->setPersona(persona);
-		lista->push_front(nodo);
+		persona.constPersona(arreglo[0], arreglo[1], arreglo[2], arreglo[3]); // procesa los datos para crear un objeto persona
+		nodo = new Nodo; // asigna un lugar en el heap para el nodo
+		nodo->setPersona(persona);//se llena el nodo de informacion
+		lista->push_front(nodo);//se usa pushfront para llenar la lista 
 	}
 	std::cout << "Se a creado una lista apartir del archivo txt \"inputdata\"" << std::endl;
 	return lista;
 }
-bool ordenB = false;
+bool ordenB = false; //se crea una bandera para mostrar si una lista esta otrdenada por Brithday
 Lista* defLista(Lista* lista, char opc = '\0') {
 	std::cout << "Si desea una lista Simple presione 1\nSi desea una lista Doble presione 2\nSi desea una lista Simple Enlazada presione 3\nSi desea una lista Doble enlazada presione 4\n" << std::endl;
 	std::cin >> opc;
@@ -131,10 +131,14 @@ void add(Lista* lista, char opc = '\0', bool listo = false) {
 		{
 		case'1':
 			lista->push_front(nodo);
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		case'2':
 			lista->push_back(nodo);
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		case'3':
@@ -142,11 +146,14 @@ void add(Lista* lista, char opc = '\0', bool listo = false) {
 				std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
 				std::cin >> x;
 				lista->insert_at(nodo, x - 1);
+				ordenA = false;
+				ordenB = false;
 				return;
 			}
 			std::cout << "Esta lista esta vacia, por lo que esta persona sera afregada automaticamente" << std::endl;
 			lista->push_front(nodo);
-
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		default:
@@ -191,6 +198,8 @@ void subb(Lista*lista, char opc = '\0',bool listo=false) {
 				std::cout << "Introdusca el indice donde eliminar a la persona" << std::endl;
 				std::cin >> x;
 				lista->delete_at(x-1);
+				ordenA = false;
+				ordenB = false;
 				listo = true;
 				break;
 			case'0':
@@ -215,10 +224,14 @@ void popedpersona(Lista* lista, Nodo* pop, char opc = '\0', bool listo = false) 
 		{
 		case'1':
 			lista->push_front(pop);
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		case'2':
 			lista->push_back(pop);
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		case'3':
@@ -226,10 +239,14 @@ void popedpersona(Lista* lista, Nodo* pop, char opc = '\0', bool listo = false) 
 				std::cout << "Introdusca el indice donde agregar a la persona" << std::endl;
 				std::cin >> x;
 				lista->insert_at(pop, x - 1);
+				ordenA = false;
+				ordenB = false;
 				return;
 			}
 			std::cout << "Esta lista esta vacia, por lo que esta persona sera afregada automaticamente" << std::endl;
 			lista->push_front(pop);
+			ordenA = false;
+			ordenB = false;
 			listo = true;
 			break;
 		case'4':
