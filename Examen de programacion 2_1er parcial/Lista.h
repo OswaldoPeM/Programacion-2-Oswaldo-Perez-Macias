@@ -38,7 +38,7 @@ public:
 	void delete_first();
 	void sortByName();
 	void sortByBrithDay();
-	void sortByEMail();
+	//void sortByEMail();
 	Nodo* pop_back();
 	Nodo* pop_front();
 };

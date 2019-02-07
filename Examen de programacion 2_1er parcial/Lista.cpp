@@ -2,12 +2,14 @@
 
 Nodo * Lista::GetRaiz()
 {
-	return _Raiz;
+		return _Raiz;
 }
 
 Nodo * Lista::GetFin()
 {
-	return _Fin;
+	if (_Raiz != NULL) {
+		return _Fin;
+	}
 }
 
 void Lista::clear()
@@ -15,7 +17,9 @@ void Lista::clear()
 	if (_Raiz != NULL) {
 		_Fin->setNext(NULL);
 		delete _Raiz;
+		_Raiz = NULL;
 	}
+	std::cout << "\n\n\nLista vacia" << std::endl;
 }
 
 void Lista::print()
@@ -29,6 +33,7 @@ void Lista::print()
 			std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
 			temp = temp->GetNext();
 		}
+		std::cout << temp->GetPersona().GetLName() << ',' << temp->GetPersona().GetFName() << ',' << temp->GetPersona().GetEMail() << ',' << temp->GetPersona().GetBD(0) << '/' << temp->GetPersona().GetBD(1) << '/' << temp->GetPersona().GetBD(2) << endl;
 		return;
 	}
 }
@@ -136,56 +141,71 @@ bool Lista::FindByName(string nombre, string apellido)
 
 int Lista::size()
 {
-	Nodo* temp = _Raiz;
 	int x = 0;
 	if (_Raiz != NULL) {
+		Nodo* temp = _Raiz;
 		while (temp != _Fin)
 		{
 			temp = temp->GetNext();
 			x++;
 		}
+		x++;
 		return x;
 	}
 	std::cout << "La lista esta vacia" << std::endl;
+	return 0;
 }
 
 Nodo * Simple::pop_back()
 {
-	Nodo* temp1 = _Raiz, *temp2=0;
-	while (temp1 != _Fin)
-	{
-		temp2 = temp1;
-		temp1 = temp1->GetNext();
+	if (_Raiz != NULL) {
+		Nodo* temp1 = _Raiz, *temp2 = 0;
+		while (temp1 != _Fin)
+		{
+			temp2 = temp1;
+			temp1 = temp1->GetNext();
+		}
+		_Fin = temp2;
+		temp2->setNext(NULL);
+		temp1->setNext(NULL);
+		return temp1;
 	}
-	_Fin = temp2;
-	temp2->setNext(NULL);
-	temp1->setNext(NULL);
-	return temp1;
+	return NULL;
 }
 
 Nodo * Simple::pop_front()
 {
-	Nodo* temp = _Raiz;
-	_Raiz = _Raiz->GetNext();
-	temp->setNext(NULL);
-	return temp;
+	if (_Raiz != NULL) {
+		Nodo* temp = _Raiz;
+		_Raiz = _Raiz->GetNext();
+		temp->setNext(NULL);
+		return temp;
+	}
+	return NULL;
 }
 
 void Simple::delete_last()
 {
-	delete pop_back();
+	if (_Raiz != NULL) {
+		Nodo* temp = _Raiz;
+		delete pop_back();
+	}
+	return;
 }
 
 void Simple::delete_first()
 {
-	delete pop_front();
+	if (_Raiz != NULL) {
+		delete pop_front();
+	}
+	return;
 }
 
 void Simple::sortByName()
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
-	int tam = size(), tam2 = size();
+	int tam = size(), tam2 = size()-1;
 	bool orden = true;
 	for (int i = 0; i < tam - 1; i++)
 	{
@@ -193,7 +213,7 @@ void Simple::sortByName()
 		anterior = _Raiz;
 		for (int j = 0; j < tam2; j++)//
 		{
-			if (actual->GetPersona().GetLName() + actual->GetPersona().GetFName() < anterior->GetPersona().GetLName() + anterior->GetPersona().GetFName()) {// intercambia de lugar la mayor por la menor.
+			if ((actual->GetPersona().GetLName() + actual->GetPersona().GetFName()) < (anterior->GetPersona().GetLName() + anterior->GetPersona().GetFName())) {// intercambia de lugar la mayor por la menor.
 				temp = actual->GetPersona();
 				actual->setPersona(anterior->GetPersona());
 				anterior->setPersona(temp);
@@ -201,9 +221,9 @@ void Simple::sortByName()
 			}
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
+			tam2--;
 		}
 		if (orden) break;
-		tam2--;
 	}
 
 }
@@ -212,7 +232,7 @@ void Simple::sortByBrithDay()
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
-	int tam = size(), tam2 = size();
+	int tam = size(), tam2 = size()-1;
 	bool orden = true;
 	for (int i = 0; i < tam - 1; i++)
 	{
@@ -239,15 +259,13 @@ void Simple::sortByBrithDay()
 			
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
+		tam2--;
 		}
 		if (orden) break;
-		tam2--;
 	}
 }
 
-void Simple::sortByEMail()
-{
-}
+
 
 
 bool Lista::isThis(Nodo * nodo)
@@ -399,25 +417,25 @@ void Doble::quickSort_byName(Nodo* izquierda, Nodo* derecha)
 
 Nodo * Doble::_quickSort_byName(Nodo * izquierda, Nodo * derecha)
 {
-	Persona x = derecha->GetPersona(),temp;
-	Nodo  *j = izquierda ,*i = izquierda->GetPrev();
-		while (j != derecha)
+	Persona x = derecha->GetPersona(), temp;
+	Nodo  *j = izquierda, *i = izquierda->GetPrev();
+	while (j != derecha)
+	{
+		if (j == NULL)return NULL;
+		if ((j->GetPersona().GetLName() + j->GetPersona().GetFName()) < (x.GetLName() + x.GetFName()))
 		{
-			if (j == NULL)return NULL;
-			if ((j->GetPersona().GetLName()+ j->GetPersona().GetFName()) < (x.GetLName()+ x.GetFName()))
-			{
-				i = (i == NULL) ? izquierda : i->GetNext();
-				temp = i->GetPersona();
-				i->setPersona(j->GetPersona());
-				j->setPersona(temp);
-			}
-			j = j->GetNext();
+			i = (i == NULL) ? izquierda : i->GetNext();
+			temp = i->GetPersona();
+			i->setPersona(j->GetPersona());
+			j->setPersona(temp);
 		}
-		i = (i == NULL) ? izquierda : i->GetNext();
-		temp = i->GetPersona();
-		i->setPersona(derecha->GetPersona());
-		derecha->setPersona(temp);
-		return i;
+		j = j->GetNext();
+	}
+	i = (i == NULL) ? izquierda : i->GetNext();
+	temp = i->GetPersona();
+	i->setPersona(derecha->GetPersona());
+	derecha->setPersona(temp);
+	return i;
 }
 
 void Doble::sortByBrithDay()
@@ -502,19 +520,23 @@ void RSimple::push_front(Nodo * nodo)
 
 void RSimple::insert_at(Nodo * nodo, int lugar)
 {
-	Nodo* temp1 = _Raiz;
-	int pos = 0;
-	while (pos != lugar)
+	if (_Raiz != NULL)
 	{
-		if (temp1 == _Fin) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
-		temp1 = temp1->GetNext();
-		pos++;
+		int pos = 0;
+		Nodo* temp1 = _Raiz;
+		while (pos != lugar)
+		{
+			if (temp1 == _Fin) { std::cout << "Lo siento la direccion donde quiere ingresara la persona es inexistente(Se ha sobrepasado)" << std::endl; return; }
+			temp1 = temp1->GetNext();
+			pos++;
+		}
+		if (temp1 = _Fin) _Fin = nodo;
+		if (temp1 = _Raiz) _Raiz = nodo;
+		nodo->setNext(temp1->GetNext());
+		temp1->setNext(nodo);
+		return;
 	}
-	if (temp1 = _Fin) _Fin = nodo;
-	if (temp1 = _Raiz) _Raiz = nodo;
-	nodo->setNext(temp1->GetNext());
-	temp1->setNext(nodo);
-
+	std::cout << "\n\nLista vacia" << std::endl;
 }
 
 void RSimple::delete_at(int lugar)
@@ -587,7 +609,7 @@ void RSimple::sortByName()
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
-	int tam = size(), tam2 = size();
+	int tam = size(), tam2 = size()-1;
 	bool orden = true;
 	for (int i = 0; i < tam - 1; i++)
 	{
@@ -608,9 +630,9 @@ void RSimple::sortByName()
 			}
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
+		tam2--;
 		}
 		if (orden) break;
-		tam2--;
 	}
 
 }
@@ -619,7 +641,7 @@ void RSimple::sortByBrithDay()
 {
 	Nodo* actual = _Raiz->GetNext(), *anterior = _Raiz;
 	Persona temp;
-	int tam = size(), tam2 = size();
+	int tam = size(), tam2 = size() - 1;
 	bool orden = true;
 	for (int i = 0; i < tam - 1; i++)
 	{
@@ -646,9 +668,9 @@ void RSimple::sortByBrithDay()
 
 			actual = actual->GetNext();
 			anterior = anterior->GetNext();
+			tam2--;
 		}
 		if (orden == true) break;
-		tam2--;
 	}
 }
 
