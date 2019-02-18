@@ -6,7 +6,7 @@ struct Nodo
 	Nodo* der;
 	Nodo* izq;
 };
-void destructor(Nodo *&arbol) {
+void destructor(Nodo *arbol) {
 	
 	if (arbol->izq != NULL) { destructor(arbol->izq); }
 	if (arbol->der != NULL) { destructor(arbol->der); }
