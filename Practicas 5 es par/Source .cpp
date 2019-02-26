@@ -1,22 +1,10 @@
-#include<iostream>
-#include <string>
-bool isPair(char z) {
-	switch (z)
+#include <iostream>
+int main(){
+	int x;
+	std::cout << "Introduce un numero del cual quieres saber si es par: ";
+	while (std::cin >> x)
 	{
-	case'2':case'4':case'6':case'8':case'0':
-		return true;
-	default:
-		return false;
-		break;
-	}
-}
-int main() {
-	std::string valor;
-	while (valor!="x")
-	{
-	std::cout << "Introdusca numero para saber si es par\nPara cerrar precione x\n";
-	std::cin >> valor;
-	(isPair(valor[valor.size()-1])) ? std::cout << "\nEs par\n" : std::cout << "\nNo es par\n";
+		(x & 1) ? std::cout << "No es par.\nPara dejar de preguntar, introdusca un caracter\ncaso contrario siga introduciendo numero" : std::cout << "Es par.\nPara dejar de preguntar, introdusca un caracter\ncaso contrario siga introduciendo numero";
 	}
 	return 0;
 }
