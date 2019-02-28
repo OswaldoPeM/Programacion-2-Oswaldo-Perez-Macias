@@ -3,16 +3,16 @@
 int main() {
 	Akinumero* arbol = new Akinumero();
 	int x = 0, y = 0;
-	std::cout << "introduce un numero para agregar al arbol presiona enter para introducir: ";
+	std::cout << "Introduce un numero entero para agregar al arbol presiona enter para introducir: ";
 	while (std::cin >> x)
 	{
-		system("cls");
-	arbol->print(arbol->getRaiz(), "");
-		std::cout << "Introduce otro numero\nPara cerrar programa introdusca un caracter\n ";
-		arbol->addNodo(arbol->getRaiz(), x);
-		y = arbol->peso(arbol->getRaiz());
+		arbol->addNodo(arbol->getRaiz(), x);//aniade enteros al arbol
+		system("cls");//limpia la bantalla
+		y = arbol->peso(arbol->getRaiz());//al mismo tiempo que  balancea el arbol regresa el peso del arbol, la profundiad que tiene
+		arbol->print(arbol->getRaiz(), "");//imprime el arbol
+		std::cout << "\nIntroduce otro numero\nPara cerrar programa introdusca un caracter\n ";//pide en cosola un numero.
 	}
-	std::cout << "El peso del arbol es de " << y << std::endl;
+	std::cout << "\nEl peso del arbol es de " << y << std::endl;
 	delete arbol;
 	system("pause");
 	return 0;

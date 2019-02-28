@@ -39,9 +39,7 @@ void Nodo::setDer(Nodo * der)
 
 void Nodo::setIzq(Nodo * izq)
 {
-	if (izq != NULL) {
 	_Izq = izq;
-	}
 }
 
 Nodo::Nodo()
