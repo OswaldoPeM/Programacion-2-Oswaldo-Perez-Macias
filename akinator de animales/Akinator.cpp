@@ -9,6 +9,7 @@ bool Akinator::opc(bool x)
 		{
 			std::cout << "Opcion (1) u Opcion (2)" << std::endl;
 			std::cin >> opc;
+			std::cin.ignore('\n');
 			switch (opc) {
 			case '1':return false; case '2':return true;
 			}
@@ -19,6 +20,7 @@ bool Akinator::opc(bool x)
 		while (true)
 		{
 			std::cin >> opc;
+			std::cin.ignore('\n');
 			switch (opc)
 			{
 			case'Y':case'y':return true; case'n':case'N':return false;
@@ -48,21 +50,18 @@ void Akinator::addNodo(Nodo* pos,std::string animal="")
 	std::cin.getline(_str, 40,'\n'); //la linea de texto introducida la convierte en animal
 	animal = _str;
 	animal = strSinEsp(animal);
-	addDecision(" " + animal);
 	pos->setDer(crearNodo());
-	pos->getDer()->setA1(animal);
+	pos->getDer()->setA1(animal);//aniade al animal nuevo
 	std::cout << "Una caracteristica general que sea el animal que pensaste, que no hayamos pasado seria\n(escribe una caracteristica general) Es: " << std::endl;
 	std::cin.getline(_str, 40,'\n');
 	animal = _str;
 	animal = strSinEsp(animal);
-	addDecision(" " + animal);
-	pos->setA2(animal);
+	pos->setA2(animal);//aniade la caracteristica que te llevaria al nuevo animal
 	std::cout << " a diferencia de " << pos->getIzq()->getA1() << " que es...(escribe una caracteristica general) Es: " << std::endl;
 	std::cin.getline(_str, 40,'\n');
 	animal = _str;
 	animal = strSinEsp(animal);
-	addDecision(" " + animal + "\n");
-	pos->setA1(animal);
+	pos->setA1(animal);// aniade la caracteristica con el anterior animal.
 }
 void Akinator::addNodo(Nodo * pos, std::string animal, std::string car1, std::string car2)
 {
@@ -73,10 +72,6 @@ void Akinator::addNodo(Nodo * pos, std::string animal, std::string car1, std::st
 	pos->setA2(car1);
 	pos->setA1(car2);
 }
-void Akinator::addDecision(std::string path)
-{
-	decisiones = decisiones + path;
-}
 
 void Akinator::adivinar(Nodo * pos)
 {
@@ -84,11 +79,9 @@ void Akinator::adivinar(Nodo * pos)
 		if (pos->getDer() != NULL && pos->getIzq() != NULL) {
 			std::cout << "El animal que estas pensando, es:\n(1) " << pos->getA1() << "\n(2) " << pos->getA2() << std::endl;
 			if (!opc(true)) {
-				addDecision("0");
 				adivinar(pos->getIzq());
 			}
 			else {
-				addDecision("1");
 				adivinar(pos->getDer());
 			}
 		}
@@ -100,7 +93,6 @@ void Akinator::adivinar(Nodo * pos)
 			else {
 				std::cout << " S U B L I M E " << std::endl;
 				system("pause");
-				decisiones = "";
 			}
 		}
 	}
@@ -108,47 +100,15 @@ void Akinator::adivinar(Nodo * pos)
 
 std::string Akinator::strSinEsp(std::string s)
 {
-	for (int i = 0; i < s.size(); i++) {
+	for (int i = 0; i < s.size(); i++) {// cambia los espacios de espacio continuo
 		if (s[i] != ' ')continue;
 
 		s[i] = ' ';
 	}
 	return s;
 }
-//version de carga de partida anterior 
-void Akinator::crearArbol(Nodo * pos)
-{
-	if (pos != NULL) {
-		std::fstream inFile("Akinator.txt");
-		std::string linea;
-		while (getline(inFile, linea)) {
-			cargarNodo(pos, linea);
-		}
-		inFile.close();
-	}
-}
-//version de asigancion de nodo anterior
-void Akinator::cargarNodo(Nodo * pos, std::string linea)
-{
-	std::string dato,datos[4];
-	int i = 0;
-	std::stringstream stream(linea);
-	while (getline(stream, dato, ' ')) {
-		datos[i] = dato;
-		i++;
-	}
-	for (int i = 0; i < datos[0].size(); i++) {// hace un recorrido del arbol para cargar un animal y asignar nodo
-		if (datos[0][i] != '1') {
-			pos = pos->getIzq();
-		}
-		else {
-			pos = pos->getDer();
-		}
-	}
-	addNodo(pos, datos[1], datos[2], datos[3]);
-}
 // crea 3 nodos que bocetan un akinator muy sencillo pero sirvio como base para desarrollar el actual
-void Akinator::arbolBase()
+void Akinator::arbolBase()// fue en su momento la forma de iniciar mi arbol ahora es una reliquia, que se puede decistir de ella en un proyecto mas limpio pero esta aqui para mostrar de donde viene
 {
 	if (this != NULL) {
 		raiz = crearNodo();
@@ -160,16 +120,7 @@ void Akinator::arbolBase()
 		raiz->getDer()->setA1("gato");
 	}
 }
-// version de guardado anteriro
-void Akinator::salvarNodo()
-{
-	if (decisiones != "") {
-		std::ofstream onFile("Akinator.txt", std::ios_base::app);
-		onFile << decisiones;
-		onFile.close();
-		decisiones = "";
-	}
-}
+
 //forma actual para salvar nodos en preorden
 void Akinator::saveData()
 {
@@ -215,7 +166,7 @@ void Akinator::readInFile(Nodo * pos, int &i)
 		}
 	}
 }
-//salva los nodos en preOrden
+//salva los nodos en post Orden
 void Akinator::writeOnFile(Nodo * pos)
 {
 	if (pos != NULL) {

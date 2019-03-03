@@ -1,7 +1,9 @@
 acuatico terrestre
 oviparo mamifero
 animal sin branquias animal con branquias
+No carnivoro Carnivoro
 pez fin
+Tiburon fin
 tortuga de mar fin
 ballena fin
 mamifero oviparo

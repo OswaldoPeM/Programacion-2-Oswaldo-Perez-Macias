@@ -4,12 +4,9 @@ using namespace std;
 int main() {
 	Akinator* akinator = new Akinator();
 	bool jugar = true;
- 	//akinator->arbolBase();
-	//akinator->crearArbol(akinator->getRaiz());
 	akinator->loadData();
 	while (jugar) {
 		akinator->adivinar(akinator->getRaiz());
-		//akinator->salvarNodo();
 		akinator->saveData();
 		system("cls");
 		cout << "Quieres seguir jugando ?";
