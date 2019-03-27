@@ -1,0 +1,4 @@
+0 ballena mamifero oviparo
+00 tortuga de mar animal con branquias animal sin branquias
+1 serpiente oviparo mamifero
+11 aguila volador reptil
