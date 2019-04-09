@@ -3,6 +3,7 @@
 #include<fstream>
 #include<sstream>
 #include<vector>
+#include<cmath>
 class Nodos
 {
 public:
@@ -23,34 +24,43 @@ public:
 	Nodos();
 	~Nodos();
 protected:
-	std::string _eti = "";
-	std::string _codigo = "";
+	std::string _eti = "";//etiqueta
+	std::string _codigo = "";//codigo
 	float _costo = 1;
 	//latitud x, longitud y
 	float _cord[2];
 };
 
-class NodoViajero:public Nodos
+class NodoViajero :public Nodos
 {
-	Nodos *_actual;
-	NodoViajero* _anterior = nullptr;
-	float _peligroT = 0;
-	float _distanciaT = 0;
-	void setDisTCord(Nodos* objetivo);
+	Nodos *_actual;//nodo actual
+	NodoViajero* _anterior = nullptr;//NodoViajer anterior
+	int pasos = 0;
+	float _peligroT = 0;//peligro o precio
+	float _distanciaT = 0;// distanciadesde la partida al actual, o desde el actual al final
+	float _disRecorrida = 0;// distancia recorrida
+	void setDisAFin(Nodos* objetivo);//asigna Distancia al objetivo
 public:
-	void setActual(Nodos *actual);
-	void setAnterior(NodoViajero* anterior);
-	void setPeligroT(float &peligro);
-	void setDistanciaT(float &distancia);
-	void setCosto(int &facP,int &facD);
-	void setCosto(float costo);
-	Nodos *getActual();
-	NodoViajero* getAnterior();
-	float getPeliT();
-	float getDistanciaT();
+	void setActual(Nodos *actual);//asigna el nodo actual
+	void setPasos();
+	void setAnterior(NodoViajero* anterior);//asigna el nodoViajero anterior
+	void setPeligroT(float &peligro);//asigna el peligro o el precio de llegar a cierto nodo
+	void setDistanciaT(float &distancia);//asigna la distancia entre nodo y nodo
+	void setCosto(int &facP, int &facD);//aigna el costo segun las exigencias de la persona
+	void setCosto(float costo);//asigna el peligro o precio para llegar a cierto nodo
+	void setDisRec(float recorrida);//similar a distanciaT pero en todos los casos hara referencia a la distancia recorrida y no a la distanciarecorrida o distancia a el objetivo
+	Nodos *getActual();//retorna el nodo actual
+	NodoViajero* getAnterior();//retrona el nodo anterior
+	float getPeliT();//regresa el peligro o precio acumulado
+	int getPasos();
+	float getDistanciaT();//regresa la distanciadesde la partida al actual, o desde el actual al final segun el caso
+	float getDisRec();//retorna la distancia recorrida
+	//Contructores
 	NodoViajero(Nodos *actual);
 	NodoViajero(Nodos *actual, float costo);
-	NodoViajero(Nodos* actual,Nodos* destino, NodoViajero* anterior, float peligro, int &facP, int &facD);
-	NodoViajero(Nodos *actual ,NodoViajero* anterior,float peligro,float distancia, int &facP,int &facD);
+	NodoViajero(Nodos* actual, Nodos* destino, NodoViajero* anterior, float peligro, int &facP, int &facD);
+	NodoViajero(Nodos* actual, Nodos* destino, NodoViajero* anterior, float distancia, float peligro, int &facP, int &facD);
+	NodoViajero(Nodos *actual, NodoViajero* anterior, float peligro, float distancia, int &facP, int &facD);
 };
+
 

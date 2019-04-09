@@ -70,21 +70,43 @@ Nodos::Nodos()
 Nodos::~Nodos()
 {
 }
-
-void NodoViajero::setDisTCord(Nodos * objetivo)
+//calcula la distancia total que tiene con el objetivo en kilometros.
+void NodoViajero::setDisAFin(Nodos * objetivo)
 {
-	float x, y;
-	x = (_actual->getCord('x') - objetivo->getCord('x'));
-	if (x < 0)x = -x;
-	y = (_actual->getCord('y') - objetivo->getCord('y'));
-	if (y < 0)y = -y;
-	_distanciaT = x + y;
+	double lat1, lon1, lat2, lon2, PI= 3.141592653;
+	lat1 = _actual->getCord('x');
+	lon1 = _actual->getCord('y');
+	lat2 = objetivo->getCord('x');
+	lon2 = objetivo->getCord('y');
+
+	double dLat = (lat2 - lat1) *
+		PI / 180.0;
+	double dLon = (lon2 - lon1) *
+		PI / 180.0;
+
+	lat1 = (lat1)* PI / 180.0;
+	lat2 = (lat2)* PI / 180.0;
+
+	double a = pow(sin(dLat / 2), 2) +
+		pow(sin(dLon / 2), 2) *
+		cos(lat1) * cos(lat2);
+	double rad = 6371;
+	double c = 2 * asin(sqrt(a));
+	_distanciaT = rad * c;
 }
 
 void NodoViajero::setActual(Nodos *actual)
 {
 	_eti = actual->getEti();
 	_actual = actual;
+}
+
+void NodoViajero::setPasos()
+{
+	if (_anterior != nullptr) {
+		pasos += _anterior->getPasos();
+	}
+	pasos++;
 }
 
 void NodoViajero::setAnterior(NodoViajero * anterior)
@@ -103,7 +125,7 @@ void NodoViajero::setPeligroT(float &peligro)
 void NodoViajero::setDistanciaT(float &distancia)
 {
 	if (_anterior != nullptr) {
-		_distanciaT = _anterior->getDistanciaT();
+		_distanciaT += _anterior->getDistanciaT();
 	}
 	_distanciaT += distancia;
 }
@@ -114,11 +136,23 @@ void NodoViajero::setCosto(int &facP, int &facD)
 	x = (facP > 0) ? _peligroT * facP : 0;
 	y = (facD > 0) ? _distanciaT * facD : 0;
 	_costo = x + y;
+	if (facD== 0&&facP==0) {
+		setPasos();
+		_costo = getPasos();
+	}
 }
 
 void NodoViajero::setCosto(float costo)
 {
 	_costo = costo;
+}
+
+void NodoViajero::setDisRec(float recorrida)
+{
+	if (_anterior != nullptr) {
+		_disRecorrida += _anterior->getDisRec();
+	}
+	_disRecorrida += recorrida;
 }
 
 Nodos* NodoViajero::getActual()
@@ -136,9 +170,19 @@ float NodoViajero::getPeliT()
 	return _peligroT;
 }
 
+int NodoViajero::getPasos()
+{
+	return pasos;
+}
+
 float NodoViajero::getDistanciaT()
 {
 	return _distanciaT;
+}
+
+float NodoViajero::getDisRec()
+{
+	return _disRecorrida;
 }
 
 NodoViajero::NodoViajero(Nodos *actual)
@@ -156,7 +200,18 @@ NodoViajero::NodoViajero(Nodos * actual,Nodos* destino, NodoViajero * anterior, 
 	setActual(actual);
 	setAnterior(anterior);
 	setPeligroT(peligro);
-	setDisTCord(destino);
+	setDisAFin(destino);
+	setCosto(facP, facD);
+}
+
+NodoViajero::NodoViajero(Nodos * actual, Nodos * destino, NodoViajero * anterior, float distancia, float peligro, int & facP, int & facD)
+{
+	setActual(actual);
+	setAnterior(anterior);
+	setPeligroT(peligro);
+	setDisAFin(destino);
+	setDistanciaT(distancia);
+	setDisRec(distancia);
 	setCosto(facP, facD);
 }
 

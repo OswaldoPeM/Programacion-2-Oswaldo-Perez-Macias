@@ -76,12 +76,19 @@ void Grafo::matCordCSV(std::string matriz)
 	x = 0;
 	while (std::getline(*mat, buffer))
 	{
+		i = 0;
 		stream = std::stringstream(buffer);
 		while (std::getline(stream, eti, ','))
 		{
-			if (eti[0] != '-')_arista[x++]=Arista(&_nodos[j],&_nodos[i]);
+			if (eti[0] != '-') {
+				_arista[x] = Arista(&_nodos[j], &_nodos[i]);
+				_arista[x++].setPrecio(eti);
+			}
+			i++;
 		}
+		j++;
 	}
+	std::cout << "Nodos agregados" << std::endl;
 }
 
 void Grafo::matCordS(std::string &matriz)
@@ -203,13 +210,14 @@ void Grafo::matAdy(std::string &matriz)
 
 void Grafo::imprimirCamino(NodoViajero *camino)
 {
+	std::cout << "\nEl mejor camino hacia "<< camino->getActual()->getEti() << " con un costo de Km"<<camino->getDisRec()<<" y $"<<camino->getPeliT()<< " fue: ";
 	std::string pasos = "";
 	while (camino != nullptr) {
 		pasos = " " + camino->getEti() + " - " + pasos;
 		camino = camino->getAnterior();
 	}
 	pasos[pasos.size() - 2] = '*';
-	std::cout << "\nEl mejor camino fue " << pasos << std::endl;
+	std::cout << '{' << pasos << '}' << std::endl;
 }
 
 void Grafo::sortVec(std::vector<NodoViajero*>* lista, int der, int izq)
@@ -230,6 +238,15 @@ void Grafo::sortVec(std::vector<NodoViajero*>* lista, int der, int izq)
 	}
 	if (izq < j) sortVec(lista, j, izq);
 	if (der > i) sortVec(lista, der, i);
+}
+
+void Grafo::imprimirNodoViajero(NodoViajero * nodoViajero)
+{
+	if (nodoViajero->getAnterior() != nullptr) {
+		std::cout << '(' << nodoViajero->getActual()->getEti() << ',' << nodoViajero->getCosto() << ',' << nodoViajero->getAnterior()->getActual()->getEti() << ')';
+		return;
+	}
+	std::cout << '(' << nodoViajero->getActual()->getEti() << ",0,NULL)";
 }
 
 Nodos * Grafo::getNodos()
@@ -292,14 +309,24 @@ void Grafo::matCordCons(std::string & matriz)
 	matCordS(matriz);
 }
 //hace busqueda de profundidad
-void Grafo::profund(std::string &inicio)
+void Grafo::profund(std::string &inicio,std::string &fin)
 {
 	bool hay;
+	std::string camino = "";
 	std::vector<Nodos*> abiertos,cerrados;
 	for (int i = 0; i < _nodoSize; i++)
 	{
 		if (_nodos[i].getEti() != inicio) continue;
 		abiertos.push_back(&_nodos[i]);
+		std::cout << "\nSe agrego " << abiertos[0]->getEti() << " a abiertos ";
+	}
+	if (abiertos.empty()) {
+		for (int i = 0; i < _nodoSize; i++)
+		{
+			if (_nodos[i].getCodi() != inicio) continue;
+			abiertos.push_back(&_nodos[i]);
+			std::cout << "\nSe agrego " << abiertos[0]->getEti() << " a abiertos ";
+		}
 	}
 	if (abiertos.empty()) {
 		std::cout << "\nNo se encontro el nodo de origen.\n";
@@ -307,10 +334,15 @@ void Grafo::profund(std::string &inicio)
 	}
 	while (!abiertos.empty()) {
 		cerrados.push_back(abiertos[abiertos.size() - 1]);
-		std::cout << cerrados[cerrados.size() - 1]->getEti() << " ";
+		camino += cerrados[cerrados.size() - 1]->getEti() + " - ";
+		if (cerrados[cerrados.size() - 1]->getEti() == fin | cerrados[cerrados.size() - 1]->getCodi() == fin) { 
+			std::cout <<"\n\n" << camino << std::endl;
+			return;
+		}
 		for (int i = abiertos.size() - 1; i > -1; i--)
 		{
 			if (cerrados[cerrados.size() - 1] == abiertos[i]) {
+				std::cout << " X Se Borro " << abiertos[i]->getEti() << " de abiertos X ";
 				abiertos.erase(abiertos.begin() + i);
 			}
 		}
@@ -325,20 +357,32 @@ void Grafo::profund(std::string &inicio)
 				}
 				if (hay) {
 					abiertos.push_back(_arista[i].getDe());
+					std::cout << " +Se agrego " << abiertos[abiertos.size() - 1]->getEti() << " a abiertos+ ";
 				}
 			}
 		}
 	}
+	std::cout << "\n\n" << camino << std::endl;
 }
 //Hace un busqueda de amplitud.
-void Grafo::amplitud(std::string &inicio)
+void Grafo::amplitud(std::string &inicio, std::string &fin)
 {
 	bool hay;
+	std::string camino="";
 	std::vector<Nodos*> abiertos, cerrados;
 	for (int i = 0; i < _nodoSize; i++)
 	{
 		if (_nodos[i].getEti() != inicio) continue;
 		abiertos.push_back(&_nodos[i]);
+		std::cout << "\nSe agrego " << abiertos[0]->getEti() << " a abiertos ";
+	}
+	if (abiertos.empty()) {
+		for (int i = 0; i < _nodoSize; i++)
+		{
+			if (_nodos[i].getCodi() != inicio) continue;
+			abiertos.push_back(&_nodos[i]);
+			std::cout << "\nSe agrego " << abiertos[0]->getEti() << " a abiertos ";
+		}
 	}
 	if (abiertos.empty()) {
 		std::cout << "\nNo se encontro el nodo de origen.\n";
@@ -347,10 +391,15 @@ void Grafo::amplitud(std::string &inicio)
 	while (!abiertos.empty())
 	{
 		cerrados.push_back(abiertos[0]);
-		std::cout << cerrados[cerrados.size() - 1]->getEti() << " ";
+		camino += cerrados[cerrados.size() - 1]->getEti() + " - ";
+		if (cerrados[cerrados.size() - 1]->getEti() == fin | cerrados[cerrados.size() - 1]->getCodi() == fin) {
+			std::cout << "\n\n" << camino << std::endl;
+			return;
+		}
 		for (int i = abiertos.size() - 1; i > -1; i--)
 		{
 			if (cerrados[cerrados.size() - 1] == abiertos[i]) {
+				std::cout << " X Se Borro " << abiertos[i]->getEti() << " de abiertos X ";
 				abiertos.erase(abiertos.begin() + i);
 			}
 		}
@@ -363,11 +412,15 @@ void Grafo::amplitud(std::string &inicio)
 					if (_arista[i].getDe() == cerrados[j]) hay = false;
 					if (!hay) break;
 				}
-				if (hay)abiertos.push_back(_arista[i].getDe());
+				if (hay) {
+					abiertos.push_back(_arista[i].getDe());
+					std::cout << " +Se agrego " << abiertos[abiertos.size() - 1]->getEti() << " a abiertos+ "; 
+				}
 			}
 		}
 
 	}
+	std::cout << "\n\n" << camino << std::endl;
 }
 //realiza una busqueda  primero el mejor.
 void Grafo::primeroMejor(std::string &inicio, std::string &objetivo, int &facP, int &facD)
@@ -381,71 +434,99 @@ void Grafo::primeroMejor(std::string &inicio, std::string &objetivo, int &facP, 
 			min++;
 			continue; }
 		abiertos->push_back(new NodoViajero(&_nodos[min++]));
-
+		std::cout << "\nSe agrego " << abiertos[0][0]->getEti() << " a abiertos ";//se encontro nodo de origen
 	}
 	if (abiertos->empty()) {
-		std::cout << "\nNo se encontro el nodo de origen.\n";
+		min = 0;
+		while (min < _nodoSize)
+		{
+			if (_nodos[min].getCodi() != inicio) {
+				min++;
+				continue;
+			}
+			abiertos->push_back(new NodoViajero(&_nodos[min++]));
+			std::cout << "\nSe agrego " << abiertos[0][0]->getEti() << " a abiertos ";//se encontro nodo de origen
+		}
+	}
+	if (abiertos->empty()) {
+		std::cout << "\nNo se encontro el nodo de origen.\n";//no se encuentra nodo de origen
 		return;
 	}
 	while (!abiertos->empty())
 	{
+		//std::cout << "\nNodos Abiertos: ";//imprime nodos abiertos
+		//for (int i = 0; i < abiertos->size(); i++)
+		//{
+		//	imprimirNodoViajero(abiertos[0][i]);
+		//}
+		//std::cout << "\nNodos Cerrados: ";//imprime nodos cerrados
+		//for (int i = 0; i < cerrados->size(); i++)
+		//{
+		//	imprimirNodoViajero(cerrados[0][i]);
+		//}
+		std::cout << "\nSe agrego a cerrados: ";//imprime nodo que se va a cerrar
+		imprimirNodoViajero(abiertos[0][0]);
 		cerrados->push_back(abiertos[0][0]);
+		std::cout << "\nSe agregaron a abiertos: ";//avisa de nodos que se abren en este ciclo
 		abiertos->erase(abiertos->begin());
-		for (int i = 0; i < _aristaSize; i++)
+		for (int i = 0; i < _aristaSize; i++)//revisa las aristas
 		{
 			hay = true;
-			if (cerrados[0][cerrados->size() - 1]->getActual()->getEti() == objetivo) {
+			if (cerrados[0][cerrados->size() - 1]->getActual()->getEti() == objetivo | cerrados[0][cerrados->size() - 1]->getActual()->getCodi() == objetivo) {//si existe el caso donde se llegue al objetivo ya no se abre este nodo
 				continue;
 			}
-			if (cerrados[0][cerrados->size() - 1]->getActual() == _arista[i].getOr()) {
-				if (cerrados[0][cerrados->size() - 1]->getAnterior() != nullptr) {
-					if (cerrados[0][cerrados->size() - 1]->getAnterior()->getActual() == _arista[i].getDe()) {
+			if (cerrados[0][cerrados->size() - 1]->getActual() == _arista[i].getOr()) {//si hay una arista que conecte el nodo que se abre con algun otro nodo
+				if (cerrados[0][cerrados->size() - 1]->getAnterior() != nullptr) {// y el nodo anterior no es nulo
+					if (cerrados[0][cerrados->size() - 1]->getAnterior()->getActual() == _arista[i].getDe()) {// si viene de el nodo al que se quiere llegar, NO
 						continue;
 					}
 				}
-				for (int j = 0; j < abiertos->size(); j++)
+				for (int j = 0; j < abiertos->size(); j++)//si ya existe en abiertos este camino, NO abrir
 				{
 					if (abiertos[0][j]->getActual() == _arista[i].getDe() && abiertos[0][j]->getAnterior()->getActual() == _arista[i].getOr()) hay = false;
 				}
-				for (int j = 1; j < cerrados->size(); j++)
+				for (int j = 1; j < cerrados->size(); j++)//si existe en cerrados este camino, NO abrir
 				{
 					if (cerrados[0][j]->getActual() == _arista[i].getDe() && cerrados[0][j]->getAnterior()->getActual() == _arista[i].getOr()) hay = false;
 				}
-				if (hay)abiertos->push_back(new NodoViajero(_arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getDe()->getCosto(), _arista[i].getDi(), facP, facD));
+				if (hay) {//agrega el nuevo nodoviajero a la lista de abiertos
+					abiertos->push_back(new NodoViajero(_arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getPrecio(), _arista[i].getDi(), facP, facD));
+					imprimirNodoViajero(abiertos[0][abiertos->size() - 1]);
+				}
 			}
 		}
-		if (abiertos->size() > 0) {
+		if (abiertos->size() > 0) {//acomoda los nodos abiertos para que el mas ligero quede al principio
 			max = abiertos->size() - 1;
 			min = 0;
 			sortVec(abiertos, max, min);
 		}
 	}
-	if (cerrados->size() > 0) {
+	if (cerrados->size() > 0) {//ordena la lista de cerrados 
 		max = cerrados->size() - 1;
 		min = 0;
 		sortVec(cerrados, max, min);
 	}
-	for (int i = 0; i <= cerrados->size(); i++)
+	for (int i = 0; i <= cerrados->size(); i++)// si existe un nodo cerrado con el nodo objetivo se imprime el de menor costo.
 	{
 		if (i == cerrados->size()) {
-			std::cout << "\nImposible llegar al nodo objetivo\n";
+			std::cout << "\nImposible llegar al nodo objetivo\n";//si no se encuentra objetivo se notifica
 			break;
 		}
-		if (cerrados[0][i]->getActual()->getEti() == objetivo) {
+		if (cerrados[0][i]->getActual()->getEti() == objetivo|cerrados[0][i]->getActual()->getCodi()==objetivo) {
 			imprimirCamino(cerrados[0][i]);
 			break;
 		}
 	}
-	for (int i = 0; i < abiertos->size(); i++)
+	for (int i = 0; i < abiertos->size(); i++)//libera memoria
 	{
 		delete abiertos[0][i];
 	}
-	for (int i = 0; i < cerrados->size(); i++)
+	for (int i = 0; i < cerrados->size(); i++)//libera memoria
 	{
 		delete cerrados[0][i];
 	}
-	delete abiertos;
-	delete cerrados;
+	delete abiertos;// libera memoria
+	delete cerrados;//libera memoria
 }
 
 void Grafo::dijkstra(std::string &inicio, int &facP, int &facD)
@@ -454,7 +535,7 @@ void Grafo::dijkstra(std::string &inicio, int &facP, int &facD)
 	int max = 0, min = 0;
 	for (int i = 0; i < _nodoSize; i++)// crea un vector lleno de caminos de costo infinto, exepto por el nodo raiz que valdra 0
 	{
-		if (_nodos[i].getEti() == inicio) {
+		if (_nodos[i].getEti() == inicio |_nodos[i].getCodi() == inicio) {
 			abiertos->push_back(new NodoViajero(&_nodos[i], 0));	
 			min++;
 		}
@@ -482,7 +563,12 @@ void Grafo::dijkstra(std::string &inicio, int &facP, int &facD)
 				{
 					if ((abiertos[0][j]->getActual() == _arista[i].getDe()) && (abiertos[0][j]->getCosto() > (_arista[i].getDi() * (_arista[i].getDe()->getCosto())))) {// si son iguales y de menor camino cambia
 						if (abiertos[0][j]->getCosto() < NodoViajero( _arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getDe()->getCosto(), _arista[i].getDi(),facP,facD).getCosto()) break;
+						std::cout << "Se actualizo el nodo ";
+						imprimirNodoViajero(abiertos[0][j]);
 						*abiertos[0][j] =  NodoViajero(_arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getDe()->getCosto(), _arista[i].getDi(), facP, facD);
+						std::cout << " a ";
+						imprimirNodoViajero(abiertos[0][j]);
+						std::cout << std::endl;
 						break;//intercambio de caminos
 					}
 				}
@@ -510,12 +596,10 @@ void Grafo::AStar(std::string &inicio, std::string &objetivo, int &facP, int &fa
 	int max = 0, min = 0;
 	while (min < _nodoSize)
 	{
-		if (_nodos[min].getEti() != inicio) {
-			min++;
-			continue;
+		if (_nodos[min].getEti() == inicio|_nodos[min].getCodi()==inicio) {
+		abiertos->push_back(new NodoViajero(&_nodos[min]));
 		}
-		abiertos->push_back(new NodoViajero(&_nodos[min++]));
-
+			min++;
 	}
 	if (abiertos->empty()) {
 		std::cout << "\nNo se encontro el nodo de origen.\n";
@@ -545,7 +629,7 @@ void Grafo::AStar(std::string &inicio, std::string &objetivo, int &facP, int &fa
 				{
 					if (cerrados[0][j]->getActual() == _arista[i].getDe() && cerrados[0][j]->getAnterior()->getActual() == _arista[i].getOr()) hay = false;
 				}
-				if (hay)abiertos->push_back(new NodoViajero(_arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getDe()->getCosto(), _arista[i].getDi(), facP, facD));
+				if (hay)abiertos->push_back(new NodoViajero(_arista[i].getDe(), cerrados[0][cerrados->size() - 1], _arista[i].getPrecio(), _arista[i].getDi(), facP, facD));
 			}
 		}
 		if (abiertos->size() > 0) {
@@ -589,13 +673,11 @@ void GrafoCord::AStar(std::string &inicio, std::string &objetivo, int &facP, int
 	int max = 0, min = 0,fin=0;
 	while (min < _nodoSize)
 	{
-		if (_nodos[min].getEti() == objetivo) fin = min;
-		if (_nodos[min].getEti() != inicio) {
-			min++;
-			continue;
+		if (_nodos[min].getEti() == objetivo|_nodos[min].getCodi()==objetivo) fin = min;
+		if (_nodos[min].getEti() == inicio | _nodos[min].getCodi()==inicio) {
+			abiertos->push_back(new NodoViajero(&_nodos[min]));
 		}
-		abiertos->push_back(new NodoViajero(&_nodos[min++]));
-
+			min++;
 	}
 	if (abiertos->empty()) {
 		std::cout << "\nNo se encontro el nodo de origen.\n";
@@ -603,8 +685,11 @@ void GrafoCord::AStar(std::string &inicio, std::string &objetivo, int &facP, int
 	}
 	while (!abiertos->empty())
 	{
+		std::cout << "\nSe agrego a cerrados: ";//imprime nodo que se va a cerrar
+		imprimirNodoViajero(abiertos[0][0]);
 		cerrados->push_back(abiertos[0][0]);
 		abiertos->erase(abiertos->begin());
+		std::cout << "\nSe agregaron a abiertos: ";//avisa de nodos que se abren en este ciclo
 		if (cerrados[0][cerrados->size() - 1]->getActual() == &_nodos[fin]) break;
 		for (int i = 0; i < _aristaSize; i++)
 		{
@@ -626,7 +711,10 @@ void GrafoCord::AStar(std::string &inicio, std::string &objetivo, int &facP, int
 				{
 					if (cerrados[0][j]->getActual() == _arista[i].getDe() && cerrados[0][j]->getAnterior()->getActual() == _arista[i].getOr()) hay = false;
 				}
-				if (hay)abiertos->push_back(new NodoViajero(_arista[i].getDe(), &_nodos[fin], cerrados[0][cerrados->size() - 1], _arista[i].getDe()->getCosto(), facP, facD));
+				if (hay) {
+					abiertos->push_back(new NodoViajero(_arista[i].getDe(), &_nodos[fin], cerrados[0][cerrados->size() - 1], _arista->getDi(), _arista->getPrecio(), facP, facD));
+					imprimirNodoViajero(abiertos[0][abiertos->size() - 1]);
+				}
 			}
 		}
 		if (abiertos->size() > 0) {
@@ -646,7 +734,7 @@ void GrafoCord::AStar(std::string &inicio, std::string &objetivo, int &facP, int
 			std::cout << "\nImposible llegar al nodo objetivo\n";
 			break;
 		}
-		if (cerrados[0][i]->getActual()->getEti() == objetivo) {
+		if (cerrados[0][i]->getActual()->getEti() == objetivo|cerrados[0][i]->getActual()->getCodi()==objetivo) {
 			imprimirCamino(cerrados[0][i]);
 			break;
 		}
